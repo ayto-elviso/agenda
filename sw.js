@@ -1,10 +1,10 @@
-const CACHE_NAME = 'agenda-elviso-v3';
+const CACHE_NAME = 'agenda-elviso-v4';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './cabecera.jpg',
-  './logo.jpg'
+  './icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
