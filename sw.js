@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agenda-elviso-v1';
+const CACHE_NAME = 'agenda-elviso-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -24,7 +24,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Los datos de Google Sheets siempre van directos a red para mostrar eventos actualizados
   if (event.request.url.includes('docs.google.com')) {
     event.respondWith(fetch(event.request));
     return;

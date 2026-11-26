@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda de El Viso · Ayuntamiento de El Viso</title>
-  <meta name="description" content="Eventos, actividades y citas culturales de El Viso de los Pedroches.">
+  <meta name="description" content="Aquí encontrarás todos los eventos, actividades y citas culturales de El Viso de los Pedroches.">
   <meta name="theme-color" content="#16263b">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -482,7 +482,7 @@
       <img src="logo.jpg" alt="Logotipo Ayuntamiento de El Viso">
     </div>
     <h1 class="header-title">Agenda de El Viso</h1>
-    <p class="header-subtitle">Eventos, actividades y citas culturales de El Viso de los Pedroches.</p>
+    <p class="header-subtitle">Aquí encontrarás todos los eventos, actividades y citas culturales de El Viso de los Pedroches.</p>
     <button type="button" class="install-btn" id="install-btn">📲 Instalar app en el móvil</button>
     <div class="ios-hint" id="ios-hint">En iPhone: pulsa el botón <strong>Compartir</strong> (cuadrado con flecha) en Safari y elige <strong>«Añadir a pantalla de inicio»</strong>.</div>
   </header>
@@ -629,18 +629,13 @@
       if (ev.descripcion) parts.push(ev.descripcion);
       if (ev.inscripcion) parts.push(`Inscripción: ${ev.inscripcion}`);
       if (ev.programa) {
-        const lineas = ev.programa.split(/\s*\|\s*|
-+/).filter(Boolean);
+        const lineas = ev.programa.split(/\s*\|\s*|\n+/).filter(Boolean);
         if (lineas.length > 0) {
-          parts.push('Programación:
-- ' + lineas.join('
-- '));
+          parts.push('Programación:\n- ' + lineas.join('\n- '));
         }
       }
       parts.push('Agenda de El Viso: https://ayto-elviso.github.io/agenda/');
-      return parts.join('
-
-');
+      return parts.join('\n\n');
     }
 
     function buildGoogleCalendarUrl(ev) {
@@ -663,11 +658,10 @@
 
     function escapeIcsText(str) {
       return str
-        .replace(/\/g, '\\')
-        .replace(/;/g, '\;')
-        .replace(/,/g, '\,')
-        .replace(/?
-/g, '\n');
+        .replace(/\\/g, '\\\\')
+        .replace(/;/g, '\\;')
+        .replace(/,/g, '\\,')
+        .replace(/\r?\n/g, '\\n');
     }
 
     function downloadIcs(idx) {
@@ -716,8 +710,7 @@
         'END:VCALENDAR'
       ];
 
-      const icsContent = icsLines.join('
-');
+      const icsContent = icsLines.join('\r\n');
 
       if (isIos) {
         window.location.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
@@ -858,8 +851,7 @@
             let programaBtnHtml = '';
             let programaListHtml = '';
             if (ev.programa) {
-              const itemsProg = ev.programa.split(/\s*\|\s*|
-+/).filter(Boolean);
+              const itemsProg = ev.programa.split(/\s*\|\s*|\n+/).filter(Boolean);
               if (itemsProg.length > 0) {
                 const listId = `prog-${toggleIdx++}`;
                 programaBtnHtml = `

@@ -1,7 +1,7 @@
 {
   "name": "Agenda de El Viso",
   "short_name": "Agenda El Viso",
-  "description": "Eventos, actividades y citas culturales de El Viso de los Pedroches.",
+  "description": "Aquí encontrarás todos los eventos, actividades y citas culturales de El Viso de los Pedroches.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
