@@ -1,19 +1,23 @@
 {
-  "name": "Agenda de El Viso",
+  "name": "Agenda de Eventos · Ayuntamiento de El Viso",
   "short_name": "Agenda El Viso",
-  "description": "Aquí encontrarás todos los eventos, actividades y citas culturales de El Viso de los Pedroches.",
-  "start_url": "./",
+  "description": "Agenda pública de actividades culturales, festivas, deportivas y municipales del Ayuntamiento de El Viso.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f3f5f8",
-  "theme_color": "#16263b",
-  "orientation": "portrait",
+  "theme_color": "#0f2942",
+  "lang": "es",
   "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
