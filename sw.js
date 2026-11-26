@@ -1,14 +1,16 @@
-const CACHE_NAME = 'agenda-el-viso-v2';
+const CACHE_NAME = 'agenda-el-viso-v3';
 const CORE_ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './cabecera.jpg',
+  './logo.jpg'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(CORE_ASSETS))
+      .then((cache) => Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url))))
       .then(() => self.skipWaiting())
   );
 });
@@ -32,13 +34,10 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // Los datos de Google Sheets siempre van directos a red para mostrar eventos actualizados
   if (url.hostname.includes('docs.google.com') || url.hostname.includes('googleusercontent.com')) {
     return;
   }
 
-  // Estrategia Network-First para la página principal:
-  // si hay conexión descarga la última versión y actualiza caché; si no hay red, usa caché.
   if (event.request.mode === 'navigate' || url.pathname.endsWith('index.html')) {
     event.respondWith(
       fetch(event.request)
@@ -52,7 +51,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Para recursos estáticos locales (manifest, iconos): caché con actualización en segundo plano
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(event.request).then((cached) => {
