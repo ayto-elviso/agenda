@@ -1,0 +1,19 @@
+{
+  "name": "Agenda de El Viso",
+  "short_name": "Agenda El Viso",
+  "description": "Eventos, actividades y citas culturales de El Viso de los Pedroches.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5f8",
+  "theme_color": "#16263b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192 512x512 1000x1000",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

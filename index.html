@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agenda de Eventos · Ayuntamiento de El Viso</title>
-  <meta name="description" content="Consulta los próximos eventos, actividades culturales, deportivas y festivas de El Viso (Córdoba).">
+  <title>Agenda de El Viso · Ayuntamiento de El Viso</title>
+  <meta name="description" content="Eventos, actividades y citas culturales de El Viso de los Pedroches.">
+  <meta name="theme-color" content="#16263b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Agenda El Viso">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
@@ -94,7 +102,7 @@
 
     .header-title {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.55rem;
+      font-size: 1.6rem;
       font-weight: 800;
       color: var(--navy);
       letter-spacing: -0.02em;
@@ -105,7 +113,43 @@
       font-size: 0.92rem;
       font-weight: 500;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin: 4px auto 0;
+      max-width: 440px;
+      padding: 0 20px;
+    }
+
+    .install-btn {
+      display: none;
+      margin: 14px auto 0;
+      background: var(--navy);
+      color: #ffffff;
+      border: none;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(22, 38, 59, 0.18);
+      transition: background 0.15s ease;
+    }
+
+    .install-btn:hover {
+      background: var(--navy-soft);
+    }
+
+    .ios-hint {
+      display: none;
+      max-width: 380px;
+      margin: 10px auto 0;
+      padding: 8px 14px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: var(--navy);
     }
 
     /* Contenedor principal */
@@ -153,10 +197,9 @@
       display: flex;
       gap: 14px;
       align-items: flex-start;
-      transition: transform 0.15s ease;
     }
 
-    /* Columna izquierda de fecha (inspirada en diseño limpio de agenda) */
+    /* Columna izquierda de fecha */
     .date-box {
       flex: 0 0 68px;
       text-align: center;
@@ -285,14 +328,21 @@
       margin-top: 8px;
     }
 
-    /* Desplegable de horarios / programación */
-    .program-toggle {
-      margin-top: 10px;
+    /* Botones de acción en la tarjeta */
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .action-btn {
       background: #f1f5f9;
       border: 1px solid var(--border);
       color: var(--navy);
       font-family: inherit;
-      font-size: 0.82rem;
+      font-size: 0.81rem;
       font-weight: 600;
       padding: 7px 12px;
       border-radius: 8px;
@@ -303,8 +353,60 @@
       transition: background 0.15s ease;
     }
 
-    .program-toggle:hover {
+    .action-btn:hover {
       background: #e2e8f0;
+    }
+
+    .cal-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .cal-menu {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: calc(100% + 6px);
+      min-width: 225px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.14);
+      padding: 6px;
+      z-index: 20;
+    }
+
+    .cal-menu.open {
+      display: block;
+    }
+
+    .cal-option {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: inherit;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--navy);
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .cal-option:hover {
+      background: #f1f5f9;
+    }
+
+    .cal-option small {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--text-muted);
     }
 
     .program-list {
@@ -361,7 +463,7 @@
         margin-top: -58px;
       }
       .header-title {
-        font-size: 1.8rem;
+        font-size: 1.85rem;
       }
       .event-card {
         padding: 20px;
@@ -379,8 +481,10 @@
     <div class="avatar-wrapper">
       <img src="logo.jpg" alt="Logotipo Ayuntamiento de El Viso">
     </div>
-    <h1 class="header-title">Agenda de Eventos</h1>
-    <p class="header-subtitle">Ayuntamiento de El Viso · Córdoba</p>
+    <h1 class="header-title">Agenda de El Viso</h1>
+    <p class="header-subtitle">Eventos, actividades y citas culturales de El Viso de los Pedroches.</p>
+    <button type="button" class="install-btn" id="install-btn">📲 Instalar app en el móvil</button>
+    <div class="ios-hint" id="ios-hint">En iPhone: pulsa el botón <strong>Compartir</strong> (cuadrado con flecha) en Safari y elige <strong>«Añadir a pantalla de inicio»</strong>.</div>
   </header>
 
   <main class="container" id="agenda-container">
@@ -400,20 +504,58 @@
     const MESES_CORTOS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
     const DIAS_SEMANA = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
 
+    let eventosCargados = [];
+
+    // Registro de Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    // Gestión de instalación PWA (Android/Chrome e iOS)
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('install-btn');
+    const iosHint = document.getElementById('ios-hint');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isStandalone) {
+        installBtn.style.display = 'inline-flex';
+      }
+    });
+
+    if (isIos && !isStandalone) {
+      installBtn.style.display = 'inline-flex';
+    }
+
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBtn.style.display = 'none';
+        }
+        deferredPrompt = null;
+      } else if (isIos) {
+        iosHint.style.display = iosHint.style.display === 'block' ? 'none' : 'block';
+      }
+    });
+
     function parseSheetDate(cell) {
       if (!cell || cell.v === null || cell.v === undefined) return null;
       const val = String(cell.v).trim();
-      // Formato Date(YYYY,M,D) de Google Visualization
       const gvizMatch = val.match(/^Date\((\d+),(\d+),(\d+)\)/);
       if (gvizMatch) {
         return new Date(Number(gvizMatch[1]), Number(gvizMatch[2]), Number(gvizMatch[3]));
       }
-      // Formato ISO YYYY-MM-DD
       const isoMatch = val.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
       if (isoMatch) {
         return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
       }
-      // Formato DD/MM/YYYY
       const esMatch = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
       if (esMatch) {
         return new Date(Number(esMatch[3]), Number(esMatch[2]) - 1, Number(esMatch[1]));
@@ -438,6 +580,178 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
     }
+
+    // Cálculo de fechas/horas para Google Calendar e iPhone (.ics)
+    function getCalendarDates(ev) {
+      const esMismoDia = ev.fechaInicio.getTime() === ev.fechaFin.getTime();
+      const horasMatch = ev.hora ? [...ev.hora.matchAll(/(\d{1,2}):(\d{2})/g)] : [];
+
+      if (esMismoDia && horasMatch.length > 0) {
+        const startH = Number(horasMatch[0][1]);
+        const startM = Number(horasMatch[0][2]);
+        const start = new Date(ev.fechaInicio.getFullYear(), ev.fechaInicio.getMonth(), ev.fechaInicio.getDate(), startH, startM, 0);
+
+        let end;
+        if (horasMatch.length > 1) {
+          const endH = Number(horasMatch[1][1]);
+          const endM = Number(horasMatch[1][2]);
+          end = new Date(ev.fechaInicio.getFullYear(), ev.fechaInicio.getMonth(), ev.fechaInicio.getDate(), endH, endM, 0);
+        } else {
+          // Duración estimada por defecto: 1 hora y 30 minutos
+          end = new Date(start.getTime() + 90 * 60000);
+        }
+
+        const fmtLocal = (d) =>
+          `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}T${pad2(d.getHours())}${pad2(d.getMinutes())}00`;
+
+        return {
+          allDay: false,
+          googleDates: `${fmtLocal(start)}/${fmtLocal(end)}`,
+          icsStart: `DTSTART;TZID=Europe/Madrid:${fmtLocal(start)}`,
+          icsEnd: `DTEND;TZID=Europe/Madrid:${fmtLocal(end)}`
+        };
+      } else {
+        // Evento de día completo o varios días (fecha fin exclusiva según estándar iCalendar)
+        const endExclusive = new Date(ev.fechaFin.getFullYear(), ev.fechaFin.getMonth(), ev.fechaFin.getDate() + 1);
+        const fmtDay = (d) => `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`;
+
+        return {
+          allDay: true,
+          googleDates: `${fmtDay(ev.fechaInicio)}/${fmtDay(endExclusive)}`,
+          icsStart: `DTSTART;VALUE=DATE:${fmtDay(ev.fechaInicio)}`,
+          icsEnd: `DTEND;VALUE=DATE:${fmtDay(endExclusive)}`
+        };
+      }
+    }
+
+    function buildEventDetailsText(ev) {
+      const parts = [];
+      if (ev.descripcion) parts.push(ev.descripcion);
+      if (ev.inscripcion) parts.push(`Inscripción: ${ev.inscripcion}`);
+      if (ev.programa) {
+        const lineas = ev.programa.split(/\s*\|\s*|
++/).filter(Boolean);
+        if (lineas.length > 0) {
+          parts.push('Programación:
+- ' + lineas.join('
+- '));
+        }
+      }
+      parts.push('Agenda de El Viso: https://ayto-elviso.github.io/agenda/');
+      return parts.join('
+
+');
+    }
+
+    function buildGoogleCalendarUrl(ev) {
+      const dates = getCalendarDates(ev);
+      const title = `${ev.emoji ? ev.emoji + ' ' : ''}${ev.titulo}`;
+      const location = ev.lugar ? `${ev.lugar}, El Viso, Córdoba` : 'El Viso, Córdoba';
+      const details = buildEventDetailsText(ev);
+
+      const params = new URLSearchParams({
+        action: 'TEMPLATE',
+        text: title,
+        dates: dates.googleDates,
+        details: details,
+        location: location,
+        ctz: 'Europe/Madrid'
+      });
+
+      return `https://calendar.google.com/calendar/render?${params.toString()}`;
+    }
+
+    function escapeIcsText(str) {
+      return str
+        .replace(/\/g, '\\')
+        .replace(/;/g, '\;')
+        .replace(/,/g, '\,')
+        .replace(/?
+/g, '\n');
+    }
+
+    function downloadIcs(idx) {
+      const ev = eventosCargados[idx];
+      if (!ev) return;
+
+      const dates = getCalendarDates(ev);
+      const title = `${ev.emoji ? ev.emoji + ' ' : ''}${ev.titulo}`;
+      const location = ev.lugar ? `${ev.lugar}, El Viso, Córdoba` : 'El Viso, Córdoba';
+      const details = buildEventDetailsText(ev);
+
+      const now = new Date();
+      const dtstamp = `${now.getUTCFullYear()}${pad2(now.getUTCMonth() + 1)}${pad2(now.getUTCDate())}T${pad2(now.getUTCHours())}${pad2(now.getUTCMinutes())}${pad2(now.getUTCSeconds())}Z`;
+      const uid = `elviso-${ev.fechaInicio.getTime()}-${idx}@ayto-elviso.github.io`;
+
+      const icsLines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Ayuntamiento de El Viso//Agenda de Eventos//ES',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VTIMEZONE',
+        'TZID:Europe/Madrid',
+        'BEGIN:STANDARD',
+        'DTSTART:19701025T030000',
+        'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+        'TZOFFSETFROM:+0200',
+        'TZOFFSETTO:+0100',
+        'END:STANDARD',
+        'BEGIN:DAYLIGHT',
+        'DTSTART:19700329T020000',
+        'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+        'TZOFFSETFROM:+0100',
+        'TZOFFSETTO:+0200',
+        'END:DAYLIGHT',
+        'END:VTIMEZONE',
+        'BEGIN:VEVENT',
+        `UID:${uid}`,
+        `DTSTAMP:${dtstamp}`,
+        dates.icsStart,
+        dates.icsEnd,
+        `SUMMARY:${escapeIcsText(title)}`,
+        `LOCATION:${escapeIcsText(location)}`,
+        `DESCRIPTION:${escapeIcsText(details)}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ];
+
+      const icsContent = icsLines.join('
+');
+
+      if (isIos) {
+        window.location.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
+      } else {
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const slug = ev.titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'evento-el-viso';
+        a.href = url;
+        a.download = `${slug}.ics`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      cerrarMenusCalendario();
+    }
+
+    function toggleCalMenu(menuId, event) {
+      event.stopPropagation();
+      const target = document.getElementById(menuId);
+      const wasOpen = target.classList.contains('open');
+      cerrarMenusCalendario();
+      if (!wasOpen) {
+        target.classList.add('open');
+      }
+    }
+
+    function cerrarMenusCalendario() {
+      document.querySelectorAll('.cal-menu.open').forEach((el) => el.classList.remove('open'));
+    }
+
+    document.addEventListener('click', cerrarMenusCalendario);
 
     async function cargarAgenda() {
       const container = document.getElementById('agenda-container');
@@ -466,7 +780,6 @@
           const fechaFin = fechaFinRaw ? fechaFinRaw : new Date(fechaInicio);
           fechaFin.setHours(0, 0, 0, 0);
 
-          // Filtrar eventos pasados: mostrar solo hoy y posteriores
           if (fechaFin < hoy) return;
 
           eventos.push({
@@ -483,15 +796,15 @@
         });
 
         eventos.sort((a, b) => a.fechaInicio - b.fechaInicio);
+        eventosCargados = eventos;
 
         if (eventos.length === 0) {
           container.innerHTML = '<div class="status-box">No hay eventos programados próximamente. Vuelve a consultar esta agenda en unos días.</div>';
           return;
         }
 
-        // Agrupar por mes y año
         const grupos = new Map();
-        eventos.forEach((ev) => {
+        eventos.forEach((ev, globalIdx) => {
           const key = `${ev.fechaInicio.getFullYear()}-${ev.fechaInicio.getMonth()}`;
           if (!grupos.has(key)) {
             grupos.set(key, {
@@ -499,7 +812,7 @@
               items: []
             });
           }
-          grupos.get(key).items.push(ev);
+          grupos.get(key).items.push({ ev, globalIdx });
         });
 
         let html = '';
@@ -509,7 +822,7 @@
           html += `<section class="month-group">`;
           html += `<h2 class="month-heading">${escapeHtml(grupo.label)}</h2>`;
 
-          grupo.items.forEach((ev) => {
+          grupo.items.forEach(({ ev, globalIdx }) => {
             const esMismoDia = ev.fechaInicio.getTime() === ev.fechaFin.getTime();
             const esHoy = hoy >= ev.fechaInicio && hoy <= ev.fechaFin;
 
@@ -542,21 +855,52 @@
               metaHtml += `<span class="detail-item">📍 ${escapeHtml(ev.lugar)}</span>`;
             }
 
-            let programaHtml = '';
+            let programaBtnHtml = '';
+            let programaListHtml = '';
             if (ev.programa) {
-              const itemsProg = ev.programa.split(/\s*\|\s*|\n+/).filter(Boolean);
+              const itemsProg = ev.programa.split(/\s*\|\s*|
++/).filter(Boolean);
               if (itemsProg.length > 0) {
                 const listId = `prog-${toggleIdx++}`;
-                programaHtml = `
-                  <button type="button" class="program-toggle" onclick="togglePrograma('${listId}', this)">
-                    Ver horarios y programación ▾
+                programaBtnHtml = `
+                  <button type="button" class="action-btn" onclick="togglePrograma('${listId}', this)">
+                    Ver programación ▾
                   </button>
+                `;
+                programaListHtml = `
                   <ul class="program-list" id="${listId}">
                     ${itemsProg.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
                   </ul>
                 `;
               }
             }
+
+            const googleUrl = buildGoogleCalendarUrl(ev);
+            const calMenuId = `cal-menu-${globalIdx}`;
+
+            const calBtnHtml = `
+              <div class="cal-dropdown">
+                <button type="button" class="action-btn" onclick="toggleCalMenu('${calMenuId}', event)">
+                  📅 Añadir al calendario ▾
+                </button>
+                <div class="cal-menu" id="${calMenuId}" onclick="event.stopPropagation()">
+                  <a class="cal-option" href="${escapeHtml(googleUrl)}" target="_blank" rel="noopener noreferrer" onclick="cerrarMenusCalendario()">
+                    <span>📆</span>
+                    <div>
+                      Google Calendar
+                      <small>Android y cuenta de Google</small>
+                    </div>
+                  </a>
+                  <button type="button" class="cal-option" onclick="downloadIcs(${globalIdx})">
+                    <span>🍎</span>
+                    <div>
+                      iPhone / Apple Calendar
+                      <small>Descarga directa (.ics)</small>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            `;
 
             html += `
               <article class="event-card">
@@ -574,7 +918,11 @@
                   ${metaHtml ? `<div class="event-details">${metaHtml}</div>` : ''}
                   ${ev.descripcion ? `<p class="event-desc">${escapeHtml(ev.descripcion)}</p>` : ''}
                   ${ev.inscripcion ? `<div class="event-registration"><strong>Inscripción:</strong> ${escapeHtml(ev.inscripcion)}</div>` : ''}
-                  ${programaHtml}
+                  <div class="card-actions">
+                    ${programaBtnHtml}
+                    ${calBtnHtml}
+                  </div>
+                  ${programaListHtml}
                 </div>
               </article>
             `;
@@ -585,14 +933,14 @@
 
         container.innerHTML = html;
       } catch (err) {
-        container.innerHTML = '<div class="status-box">No se ha podido cargar la agenda en este momento. Comprueba que la hoja de cálculo esté compartida como pública en modo lector.</div>';
+        container.innerHTML = '<div class="status-box">No se ha podido cargar la agenda en este momento. Comprueba tu conexión a internet.</div>';
       }
     }
 
     function togglePrograma(id, btn) {
       const list = document.getElementById(id);
       const isOpen = list.classList.toggle('open');
-      btn.textContent = isOpen ? 'Ocultar programación ▴' : 'Ver horarios y programación ▾';
+      btn.textContent = isOpen ? 'Ocultar programación ▴' : 'Ver programación ▾';
     }
 
     cargarAgenda();
