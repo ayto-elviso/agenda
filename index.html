@@ -19,7 +19,6 @@
   <style>
     :root {
       --navy: #0f2942;
-      --gold: #e0a800;
       --bg-page: #f3f5f8;
       --bg-card: #ffffff;
       --bg-soft: #eef2f7;
@@ -89,7 +88,7 @@
       letter-spacing: 0.06em; text-transform: uppercase;
     }
     .month-heading::before {
-      content: ''; width: 5px; height: 22px; border-radius: 3px; background: var(--gold);
+      content: ''; width: 5px; height: 22px; border-radius: 3px; background: #60a5fa;
     }
     .events-list { display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 22px; }
 
@@ -100,38 +99,32 @@
       border-radius: 16px;
       box-shadow: var(--shadow-card);
     }
-    .event-date-band {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 10px 16px;
-      background: #dde8f4;
-      border-bottom: 1px solid #c3d3e6;
-      border-left: 5px solid var(--gold);
-      border-radius: 15px 15px 0 0;
-    }
-    .event-date-text {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 14px; font-weight: 800; color: var(--navy);
-    }
-    .event-date-text svg { width: 16px; height: 16px; flex: 0 0 auto; }
-
     .badge {
       font-size: 11.5px; font-weight: 800;
       padding: 4px 10px; border-radius: 999px; white-space: nowrap;
     }
-    .badge-hoy { background: var(--gold); color: var(--navy); }
+    .badge-hoy { background: #1a66c9; color: #fff; }
     .badge-manana { background: var(--navy); color: #fff; }
-    .badge-semana { background: #fff3c4; color: #6b4e00; }
+    .badge-semana { background: #dbeafe; color: #1e3a8a; }
     .badge-curso { background: #fff; color: var(--navy); border: 1px solid #c3d3e6; }
+    .badge { margin-left: auto; flex: 0 0 auto; }
 
     .event-content { padding: 16px; }
+    .event-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .event-emoji-ball {
+      width: 54px; height: 54px; flex: 0 0 auto;
+      border-radius: 50%; background: var(--bg-soft);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; line-height: 1;
+    }
     .event-title {
-      margin: 0; font-size: 18px; line-height: 1.25; font-weight: 800;
+      margin: 0; min-width: 0; font-size: 20px; line-height: 1.25; font-weight: 800;
       color: var(--text-main); letter-spacing: -0.01em;
       overflow-wrap: anywhere;
     }
-    .event-emoji { margin-right: 2px; }
 
-    .event-info { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .event-info { display: flex; flex-direction: column; gap: 8px; }
+    .info-date { flex: 1; min-width: 0; font-weight: 800; color: var(--navy); }
     .info-row {
       display: flex; align-items: center; gap: 10px;
       font-size: 14.5px; font-weight: 600; line-height: 1.35; color: var(--text-main);
@@ -189,10 +182,12 @@
     .cal-menu a:hover, .cal-menu button:hover { background: var(--bg-soft); }
 
     .btn-poster {
-      width: 100%; margin-top: 14px;
-      border: 1px solid var(--border-strong); background: #f8fafc; color: var(--navy);
+      margin-top: 10px; min-height: 44px; padding: 0 2px; gap: 7px;
+      border: 0; background: transparent; color: var(--text-muted);
+      font-size: 13.5px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px;
     }
-    .btn-poster:hover { background: var(--bg-soft); }
+    .btn-poster svg { width: 16px; height: 16px; }
+    .btn-poster:hover { color: var(--navy); }
 
     .poster-modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; }
     .poster-modal[hidden] { display: none; }
@@ -629,6 +624,7 @@
       const badge = getBadge(ev, today);
       const title = prettyTitle(ev.titulo);
 
+      const dateRow = `<div class="info-row"><span class="info-icon">${ICONS.calendar}</span><span class="info-date">${escapeHtml(formatDateLabel(ev))}</span>${badge ? `<span class="badge ${badge.cls}">${badge.text}</span>` : ''}</div>`;
       const rows = [];
       if (ev.hora) rows.push(infoRow(ICONS.clock, escapeHtml(ev.hora)));
       if (ev.lugar) rows.push(infoRow(ICONS.pin, escapeHtml(ev.lugar)));
@@ -659,13 +655,12 @@
 
       return `
         <article class="event-card">
-          <div class="event-date-band">
-            <span class="event-date-text">${ICONS.calendar}<span>${escapeHtml(formatDateLabel(ev))}</span></span>
-            ${badge ? `<span class="badge ${badge.cls}">${badge.text}</span>` : ''}
-          </div>
           <div class="event-content">
-            <h3 class="event-title">${ev.emoji ? `<span class="event-emoji" aria-hidden="true">${escapeHtml(ev.emoji)}</span> ` : ''}${escapeHtml(title)}</h3>
-            ${rows.length ? `<div class="event-info">${rows.join('')}</div>` : ''}
+            <div class="event-head">
+              ${ev.emoji ? `<span class="event-emoji-ball" aria-hidden="true">${escapeHtml(ev.emoji)}</span>` : ''}
+              <h3 class="event-title">${escapeHtml(title)}</h3>
+            </div>
+            <div class="event-info">${dateRow}${rows.join('')}</div>
             ${ev.descripcion ? `<p class="event-desc">${escapeHtml(ev.descripcion)}</p>` : ''}
             ${ev.cartel && resolvePoster(ev.cartel) ? `<button type="button" class="btn btn-poster" data-poster-index="${index}">${ICONS.image}<span>Ver cartel</span></button>` : ''}
             <div class="event-actions">${programBtn}${saveBtn}${shareBtn}</div>
