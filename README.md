@@ -39,7 +39,7 @@ La web lee la pestaña `Eventos` (la hoja debe estar compartida como «cualquier
 | `Lugar` | Ubicación (opcional) | `Plaza de la Constitución` |
 | `Programa` | Una actividad por línea (`Alt+Enter` dentro de la celda), o separadas por `\|` (opcional). Se muestran como lista con puntos | `18:00 h · El Belén` ↵ `18:30 h · Alumbrado` |
 | `Inscripcion` | Instrucciones o enlace (opcional) | `En el Ayuntamiento hasta el 2 de diciembre` |
-| `Descripcion` | Resumen breve | `Inauguración del Belén y encendido oficial.` |
+| `Descripcion` | Resumen breve. Se muestra dividido en párrafos: uno por frase y uno por cada salto de línea | `Inauguración del Belén y encendido oficial.` |
 | `Cartel` | Enlace al cartel del evento (opcional). Aparece el botón «Ver cartel» | `https://drive.google.com/file/d/…/view` |
 
 ### Carteles

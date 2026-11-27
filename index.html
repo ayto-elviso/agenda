@@ -152,7 +152,9 @@
     }
     .info-icon svg { width: 17px; height: 17px; }
 
-    .event-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); white-space: pre-line; }
+    .event-desc { margin-top: 12px; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+    .event-desc p { margin: 0 0 8px; }
+    .event-desc p:last-child { margin-bottom: 0; }
 
     .event-actions {
       display: flex; gap: 8px;
@@ -405,6 +407,35 @@
     // o separando las actividades con "|".
     function splitProgram(text) {
       return String(text || '').split(/\r?\n|\|/).map((x) => x.trim()).filter(Boolean);
+    }
+
+    // Abreviaturas tras las que un punto NO cierra frase ("Sr. Pérez", "n.º 5", "Avda. de…").
+    const ABBREVIATIONS = new Set(['sr', 'sra', 'sres', 'srta', 'dr', 'dra', 'dña', 'don', 'ud', 'uds', 'avda', 'avd', 'pza', 'pl', 'c', 'cl', 'ctra', 'núm', 'num', 'n', 'nº', 'p', 'pág', 'págs', 'tel', 'tlf', 'ej', 'aprox', 'excmo', 'excma', 'ilmo', 'ilma', 'prof', 'gral', 'fdo', 'vs', 'cía', 'ntra', 'ntro', 'sta', 'sto', 'ss']);
+
+    // Divide la descripción en párrafos: uno por cada salto de línea y, dentro de cada línea,
+    // uno por frase (tras . ! ? seguido de una palabra que empieza en mayúscula).
+    function splitParagraphs(text) {
+      const result = [];
+      String(text || '').split(/\r?\n/).forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        const re = /[.!?…]+["”»)\]]*\s+(?=[A-ZÁÉÍÓÚÜÑ¿¡"“«(])/g;
+        let start = 0;
+        let m;
+        while ((m = re.exec(trimmed)) !== null) {
+          const end = m.index + m[0].length;
+          const chunk = trimmed.slice(start, m.index + m[0].trimEnd().length);
+          const lastWord = (chunk.match(/([^\s]+?)[.!?…]+["”»)\]]*$/) || [])[1] || '';
+          const clean = lastWord.replace(/^[^\wÁÉÍÓÚÜÑáéíóúüñ]+/, '').toLowerCase();
+          const isInitial = /^[A-ZÁÉÍÓÚÜÑ]$/.test(lastWord.replace(/^[^\wÁÉÍÓÚÜÑáéíóúüñ]+/, ''));
+          if (/[.]$/.test(chunk) && (ABBREVIATIONS.has(clean) || isInitial)) continue;
+          result.push(chunk.trim());
+          start = end;
+        }
+        const rest = trimmed.slice(start).trim();
+        if (rest) result.push(rest);
+      });
+      return result;
     }
 
     function escapeHtml(text) {
@@ -771,7 +802,7 @@
               <h3 class="event-title">${escapeHtml(title)}</h3>
             </div>
             <div class="event-info">${dateRow}${rows.join('')}</div>
-            ${ev.descripcion ? `<p class="event-desc">${escapeHtml(ev.descripcion)}</p>` : ''}
+            ${ev.descripcion ? `<div class="event-desc">${splitParagraphs(ev.descripcion).map((para) => `<p>${escapeHtml(para)}</p>`).join('')}</div>` : ''}
             ${ev.cartel && resolvePoster(ev.cartel) ? `<button type="button" class="btn btn-poster" data-poster-index="${index}">${ICONS.image}<span>Ver cartel</span></button>` : ''}
             <div class="event-actions">${programBtn}${saveBtn}${shareBtn}</div>
             ${programList}
