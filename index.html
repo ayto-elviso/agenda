@@ -154,6 +154,10 @@
 
     .event-desc { margin-top: 12px; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
     .event-desc p { margin: 0 0 8px; }
+    .event-desc a, .info-row a, .program-list a {
+      color: var(--navy); font-weight: 600;
+      text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere;
+    }
     .event-desc p:last-child { margin-bottom: 0; }
 
     .event-actions {
@@ -448,9 +452,34 @@
         .replace(/'/g, '&#39;');
     }
 
+    // Convierte en enlaces pulsables las direcciones web (con o sin https:// / www.) y los correos.
+    // El resto del texto se escapa, y solo se generan enlaces http(s) o mailto.
+    const LINK_RE = /(^|[\s(\[«"“¿¡>])((?:https?:\/\/|www\.)[^\s<>"“”«»]+|[\w.+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+|(?:[A-Za-z0-9-]+\.)+(?:es|com|org|net|info|eu|cat|gal|eus|edu|gov|app|io|tv|me|co|biz|online|site)(?![\w@-])(?:[\/?#][^\s<>"“”«»]*)?)/gi;
+
     function linkify(text) {
-      const escaped = escapeHtml(text);
-      return escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+      const src = String(text || '');
+      let out = '';
+      let last = 0;
+      let m;
+      LINK_RE.lastIndex = 0;
+      while ((m = LINK_RE.exec(src)) !== null) {
+        const start = m.index + m[1].length;
+        const raw = m[2];
+        const trail = (raw.match(/[.,;:!?)\]»"”']+$/) || [''])[0];
+        const shown = raw.slice(0, raw.length - trail.length);
+        if (!shown) { LINK_RE.lastIndex = start + raw.length; continue; }
+
+        let href;
+        if (/^https?:\/\//i.test(shown)) href = shown;
+        else if (/^[\w.+-]+@/.test(shown)) href = 'mailto:' + shown;
+        else href = 'https://' + shown;
+
+        out += escapeHtml(src.slice(last, start)) +
+          `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(shown)}</a>`;
+        last = start + shown.length;
+        LINK_RE.lastIndex = last;
+      }
+      return out + escapeHtml(src.slice(last));
     }
 
     function prettyTitle(title) {
@@ -778,7 +807,7 @@
         if (items.length) {
           const progId = `prog-${index}`;
           programBtn = `<button type="button" class="btn btn-primary program-toggle" aria-expanded="false" aria-controls="${progId}"><span>Ver programación</span>${ICONS.chevron}</button>`;
-          programList = `<ul class="program-list" id="${progId}" hidden>${items.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`;
+          programList = `<ul class="program-list" id="${progId}" hidden>${items.map((i) => `<li>${linkify(i)}</li>`).join('')}</ul>`;
         }
       }
 
@@ -802,7 +831,7 @@
               <h3 class="event-title">${escapeHtml(title)}</h3>
             </div>
             <div class="event-info">${dateRow}${rows.join('')}</div>
-            ${ev.descripcion ? `<div class="event-desc">${splitParagraphs(ev.descripcion).map((para) => `<p>${escapeHtml(para)}</p>`).join('')}</div>` : ''}
+            ${ev.descripcion ? `<div class="event-desc">${splitParagraphs(ev.descripcion).map((para) => `<p>${linkify(para)}</p>`).join('')}</div>` : ''}
             ${ev.cartel && resolvePoster(ev.cartel) ? `<button type="button" class="btn btn-poster" data-poster-index="${index}">${ICONS.image}<span>Ver cartel</span></button>` : ''}
             <div class="event-actions">${programBtn}${saveBtn}${shareBtn}</div>
             ${programList}

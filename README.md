@@ -20,6 +20,7 @@ Aplicación web progresiva (PWA) estática en HTML, CSS y JavaScript puro, pensa
 - Meses con encabezado fijo al hacer scroll.
 - Una tarjeta por evento: fecha, hora, lugar, inscripción, descripción y programa desplegable.
 - Avisos: **Hoy**, **Mañana**, **Esta semana** (próximos 7 días) y **En curso** (eventos de varios días ya iniciados).
+- Las direcciones web (con o sin `https://`), los correos y los enlaces de inscripción escritos en la descripción, el programa o la inscripción se convierten en enlaces pulsables.
 - Botón **Ver cartel** (si el evento tiene cartel) que lo abre a pantalla completa.
 - Botón **Guardar** (Google Calendar o archivo `.ics`) y botón de **compartir**: abre el menú del móvil (WhatsApp, Telegram, SMS…) con un mensaje de texto con emojis y toda la información del evento. Termina con un único enlace a la agenda. Si el dispositivo no lo permite, copia el texto.
 - Se guarda el último listado en el móvil: si no hay cobertura, se muestra con el aviso "Sin conexión".
