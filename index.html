@@ -103,8 +103,9 @@
     .event-date-band {
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
       padding: 10px 16px;
-      background: var(--bg-soft);
-      border-bottom: 1px solid var(--border);
+      background: #dde8f4;
+      border-bottom: 1px solid #c3d3e6;
+      border-left: 5px solid var(--gold);
       border-radius: 15px 15px 0 0;
     }
     .event-date-text {
@@ -119,8 +120,8 @@
     }
     .badge-hoy { background: var(--gold); color: var(--navy); }
     .badge-manana { background: var(--navy); color: #fff; }
-    .badge-semana { background: #fdf3d0; color: #6b4e00; }
-    .badge-curso { background: #dfe7f1; color: var(--navy); }
+    .badge-semana { background: #fff3c4; color: #6b4e00; }
+    .badge-curso { background: #fff; color: var(--navy); border: 1px solid #c3d3e6; }
 
     .event-content { padding: 16px; }
     .event-title {
@@ -187,6 +188,38 @@
     }
     .cal-menu a:hover, .cal-menu button:hover { background: var(--bg-soft); }
 
+    .btn-poster {
+      width: 100%; margin-top: 14px;
+      border: 1px solid var(--border-strong); background: #f8fafc; color: var(--navy);
+    }
+    .btn-poster:hover { background: var(--bg-soft); }
+
+    .poster-modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .poster-modal[hidden] { display: none; }
+    .poster-backdrop { position: absolute; inset: 0; background: rgba(10, 20, 35, 0.86); }
+    .poster-panel {
+      position: relative; width: 100%; max-width: 520px; max-height: 100%;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .poster-top { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .poster-title { margin: 0; color: #fff; font-size: 15px; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+    .poster-close {
+      width: 44px; height: 44px; flex: 0 0 auto; border-radius: 50%;
+      border: 0; background: rgba(255, 255, 255, 0.16); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .poster-close svg { width: 22px; height: 22px; }
+    .poster-stage { display: flex; align-items: center; justify-content: center; min-height: 120px; max-width: 100%; }
+    .poster-stage img {
+      display: block; max-width: 100%; max-height: calc(100vh - 170px); max-height: calc(100dvh - 170px);
+      border-radius: 10px; background: #fff;
+    }
+    .poster-stage img[hidden] { display: none; }
+    .poster-stage .spinner { border-color: rgba(255, 255, 255, 0.3); border-top-color: #fff; margin: 0; }
+    .poster-error { margin: 0; color: #fff; font-size: 14px; text-align: center; }
+    .poster-error[hidden] { display: none; }
+    .poster-open { color: #fff; font-size: 14px; font-weight: 600; padding: 10px 14px; }
+
     .program-list {
       list-style: none; margin: 14px 0 0; padding: 4px 14px;
       background: #f8fafc; border: 1px solid var(--border); border-radius: 10px;
@@ -238,6 +271,24 @@
       <p>Cargando programación actualizada…</p>
     </div>
   </main>
+
+  <div class="poster-modal" id="posterModal" role="dialog" aria-modal="true" aria-labelledby="posterTitle" hidden>
+    <div class="poster-backdrop" data-poster-close></div>
+    <div class="poster-panel">
+      <div class="poster-top">
+        <p class="poster-title" id="posterTitle"></p>
+        <button type="button" class="poster-close" id="posterClose" data-poster-close aria-label="Cerrar cartel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="poster-stage">
+        <div class="spinner" id="posterSpinner" aria-hidden="true"></div>
+        <img id="posterImg" alt="" hidden />
+      </div>
+      <p class="poster-error" id="posterError" hidden>No se ha podido cargar el cartel.</p>
+      <a class="poster-open" id="posterOpen" target="_blank" rel="noopener noreferrer">Abrir en otra pestaña</a>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <p id="updateInfo">Ayuntamiento de El Viso</p>
@@ -495,6 +546,68 @@
     }
 
     /* =========================================================
+       CARTEL
+       ========================================================= */
+    // Acepta un enlace de Google Drive (/file/d/ID/..., open?id=ID, uc?id=ID),
+    // cualquier enlace https a una imagen, o el nombre de un archivo del repositorio.
+    function resolvePoster(raw) {
+      const value = String(raw || '').trim();
+      if (!value) return null;
+
+      if (/^https?:\/\/(drive|docs)\.google\.com\//i.test(value)) {
+        const m = value.match(/\/d\/([\w-]{10,})/) || value.match(/[?&]id=([\w-]{10,})/);
+        if (!m) return null;
+        return {
+          src: `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1600`,
+          open: `https://drive.google.com/file/d/${m[1]}/view`
+        };
+      }
+      if (/^https:\/\//i.test(value)) return { src: value, open: value };
+      if (!/^[a-z][a-z0-9+.-]*:/i.test(value) && !value.startsWith('//')) {
+        return { src: encodeURI(value), open: encodeURI(value) };
+      }
+      return null; // http:, javascript:, data:, etc. no se admiten
+    }
+
+    let posterFocusReturn = null;
+
+    function openPoster(ev, trigger) {
+      const poster = resolvePoster(ev.cartel);
+      if (!poster) return;
+      const modal = document.getElementById('posterModal');
+      const img = document.getElementById('posterImg');
+      const spinner = document.getElementById('posterSpinner');
+      const error = document.getElementById('posterError');
+
+      posterFocusReturn = trigger || null;
+      document.getElementById('posterTitle').textContent = prettyTitle(ev.titulo);
+      document.getElementById('posterOpen').href = poster.open;
+      img.hidden = true;
+      error.hidden = true;
+      spinner.hidden = false;
+      img.alt = `Cartel: ${prettyTitle(ev.titulo)}`;
+      img.onload = () => { spinner.hidden = true; img.hidden = false; };
+      img.onerror = () => { spinner.hidden = true; error.hidden = false; };
+      img.src = poster.src;
+
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      document.getElementById('posterClose').focus();
+    }
+
+    function closePoster() {
+      const modal = document.getElementById('posterModal');
+      if (modal.hidden) return;
+      modal.hidden = true;
+      const img = document.getElementById('posterImg');
+      img.onload = img.onerror = null;
+      img.removeAttribute('src');
+      document.body.style.overflow = '';
+      if (posterFocusReturn && posterFocusReturn.focus) posterFocusReturn.focus();
+      posterFocusReturn = null;
+    }
+
+    /* =========================================================
        RENDER
        ========================================================= */
     const ICONS = {
@@ -504,6 +617,7 @@
       pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>',
       clipboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M9 14l2 2 4-4"></path></svg>',
       chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>',
+      image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>',
       share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>'
     };
 
@@ -553,6 +667,7 @@
             <h3 class="event-title">${ev.emoji ? `<span class="event-emoji" aria-hidden="true">${escapeHtml(ev.emoji)}</span> ` : ''}${escapeHtml(title)}</h3>
             ${rows.length ? `<div class="event-info">${rows.join('')}</div>` : ''}
             ${ev.descripcion ? `<p class="event-desc">${escapeHtml(ev.descripcion)}</p>` : ''}
+            ${ev.cartel && resolvePoster(ev.cartel) ? `<button type="button" class="btn btn-poster" data-poster-index="${index}">${ICONS.image}<span>Ver cartel</span></button>` : ''}
             <div class="event-actions">${programBtn}${saveBtn}${shareBtn}</div>
             ${programList}
           </div>
@@ -599,6 +714,18 @@
     }
 
     document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-poster-close]')) {
+        closePoster();
+        return;
+      }
+
+      const posterBtn = e.target.closest('[data-poster-index]');
+      if (posterBtn) {
+        const ev = currentEvents[Number(posterBtn.getAttribute('data-poster-index'))];
+        if (ev) openPoster(ev, posterBtn);
+        return;
+      }
+
       const progBtn = e.target.closest('.program-toggle');
       if (progBtn) {
         const list = document.getElementById(progBtn.getAttribute('aria-controls'));
@@ -631,7 +758,10 @@
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeCalMenus();
+      if (e.key === 'Escape') {
+        closeCalMenus();
+        closePoster();
+      }
     });
 
     /* =========================================================
@@ -676,7 +806,8 @@
             lugar: obj.Lugar || '',
             programa: obj.Programa || '',
             inscripcion: obj.Inscripcion || '',
-            descripcion: obj.Descripcion || ''
+            descripcion: obj.Descripcion || '',
+            cartel: obj.Cartel || ''
           };
         })
         .filter((ev) => ev && ev.endDate >= today)

@@ -20,6 +20,7 @@ Aplicación web progresiva (PWA) estática en HTML, CSS y JavaScript puro, pensa
 - Meses con encabezado fijo al hacer scroll.
 - Una tarjeta por evento: fecha, hora, lugar, inscripción, descripción y programa desplegable.
 - Avisos: **Hoy**, **Mañana**, **Esta semana** (próximos 7 días) y **En curso** (eventos de varios días ya iniciados).
+- Botón **Ver cartel** (si el evento tiene cartel) que lo abre a pantalla completa.
 - Botón **Guardar** (Google Calendar o archivo `.ics`) y botón de **compartir por WhatsApp**.
 - Se guarda el último listado en el móvil: si no hay cobertura, se muestra con el aviso "Sin conexión".
 - Los títulos escritos todo en mayúsculas se muestran con mayúscula inicial por palabra. Se puede desactivar con `NORMALIZE_UPPERCASE_TITLES = false` en `index.html`.
@@ -39,6 +40,15 @@ La web lee la pestaña `Eventos` (la hoja debe estar compartida como «cualquier
 | `Programa` | Hitos separados por `\|` (opcional) | `18:00 h · El Belén \| 18:30 h · Alumbrado` |
 | `Inscripcion` | Instrucciones o enlace (opcional) | `En el Ayuntamiento hasta el 2 de diciembre` |
 | `Descripcion` | Resumen breve | `Inauguración del Belén y encendido oficial.` |
+| `Cartel` | Enlace al cartel del evento (opcional). Aparece el botón «Ver cartel» | `https://drive.google.com/file/d/…/view` |
+
+### Carteles
+
+1. Sube el cartel (mejor JPG o PNG) a una carpeta de Google Drive compartida como **«Cualquier persona con el enlace: Lector»**.
+2. Copia el enlace del archivo y pégalo en la columna `Cartel` de esa fila **como texto** (que se vea `https://drive.google.com/...`, no como «chip» de archivo).
+3. También valen un enlace `https://` a una imagen o el nombre de un archivo subido al repositorio (por ejemplo `carteles/belen.jpg`).
+
+Si la columna `Cartel` no existe o está vacía en una fila, el botón no aparece.
 
 La columna `Tipo` ya no se usa: puede quedarse en la hoja sin problema.
 
