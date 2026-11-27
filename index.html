@@ -8,7 +8,6 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Agenda de El Viso" />
   <meta property="og:description" content="Todos los eventos, actividades y citas culturales de El Viso de los Pedroches." />
-  <meta property="og:image" content="https://ayto-elviso.github.io/agenda/cabecera.jpg" />
   <title>Agenda de El Viso</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon-512.png" />
@@ -70,8 +69,24 @@
       letter-spacing: -0.02em; color: var(--navy);
     }
     .header-subtitle {
-      margin: 8px auto 0; max-width: 300px; padding: 0 8px;
-      font-size: 14px; line-height: 1.5; color: var(--text-muted);
+      margin: 8px auto 0; max-width: 340px; padding: 0 12px;
+      font-size: clamp(12px, 3.6vw, 14px); line-height: 1.5; color: var(--text-muted);
+      text-wrap: balance;
+    }
+    .install-hint { margin: 6px 0 0; }
+    .install-hint[hidden], .install-help[hidden] { display: none; }
+    .install-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      min-height: 40px; padding: 0 10px;
+      border: 0; background: transparent; color: var(--text-muted);
+      font-size: 13px; font-weight: 600;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .install-link svg { width: 14px; height: 14px; flex: 0 0 auto; }
+    .install-link:hover { color: var(--navy); }
+    .install-help {
+      margin: 0 auto; max-width: 300px; padding: 0 12px;
+      font-size: 12.5px; line-height: 1.5; color: var(--text-muted);
     }
 
     /* ---------- Contenido ---------- */
@@ -158,10 +173,19 @@
       border: 1px solid var(--border-strong); background: #fff; color: var(--navy);
     }
     .btn-share {
-      width: 46px; border: 1px solid #bfe3cc; background: #f0faf4; color: #15803d;
+      width: 46px; padding: 0; border: 1px solid var(--border-strong); background: #fff; color: var(--navy);
     }
     .btn-share svg { width: 18px; height: 18px; }
     .btn-only-save { flex: 1; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%); z-index: 60;
+      max-width: calc(100% - 32px); padding: 11px 18px; border-radius: 999px;
+      background: var(--navy); color: #fff; font-size: 14px; font-weight: 600; text-align: center;
+      box-shadow: 0 6px 20px rgba(15, 41, 66, 0.3);
+    }
+    .toast[hidden] { display: none; }
 
     .cal-wrapper { position: relative; display: flex; }
     .cal-wrapper.grow { flex: 1; }
@@ -241,6 +265,7 @@
     @media (min-width: 700px) {
       .header-banner { height: 220px; }
       .header-title { font-size: 34px; }
+      .header-subtitle { max-width: 440px; }
     }
     @media (prefers-reduced-motion: reduce) {
       .spinner { animation-duration: 2s; }
@@ -258,6 +283,13 @@
     </div>
     <h1 class="header-title">Agenda de El Viso</h1>
     <p class="header-subtitle">Aquí encontrarás todos los eventos, actividades y citas culturales de El Viso de los Pedroches.</p>
+    <p class="install-hint" id="installHint" hidden>
+      <button type="button" class="install-link" id="installBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"></rect><path d="M12 8v6M9.5 11.5L12 14l2.5-2.5"></path></svg>
+        <span>Instalar la agenda en tu móvil</span>
+      </button>
+    </p>
+    <p class="install-help" id="installHelp" hidden>En iPhone: pulsa el botón Compartir (el cuadrado con la flecha) y elige «Añadir a pantalla de inicio».</p>
   </header>
 
   <main class="main-container" id="agendaContainer">
@@ -285,6 +317,8 @@
     </div>
   </div>
 
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
   <footer class="site-footer">
     <p id="updateInfo">Ayuntamiento de El Viso</p>
   </footer>
@@ -305,6 +339,7 @@
     const DAYS_FULL = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const DAYS_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     const MONTHS_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const MONTHS_LONG = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     const MONTHS_FULL = [
       'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
       'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
@@ -532,12 +567,83 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    function buildWhatsAppUrl(ev) {
-      const lines = [`${ev.emoji ? ev.emoji + ' ' : ''}*${prettyTitle(ev.titulo)}*`];
-      lines.push(formatDateLabel(ev) + (ev.hora ? ` · ${ev.hora}` : ''));
-      if (ev.lugar) lines.push(`Lugar: ${ev.lugar}`);
-      lines.push('', 'Agenda de El Viso: ' + location.origin + location.pathname);
-      return 'https://wa.me/?text=' + encodeURIComponent(lines.join('\n'));
+    // Fecha completa para el mensaje: "Viernes 4 de diciembre de 2026" o
+    // "Del jueves 3 de diciembre al miércoles 30 de diciembre de 2026".
+    function formatDateLong(ev) {
+      const one = (d, withYear) =>
+        `${DAYS_FULL[d.getDay()].toLowerCase()} ${d.getDate()} de ${MONTHS_LONG[d.getMonth()]}` +
+        (withYear ? ` de ${d.getFullYear()}` : '');
+      const s = ev.startDate;
+      const e = ev.endDate;
+      if (!e || isSameDay(s, e)) {
+        const t = one(s, true);
+        return t.charAt(0).toUpperCase() + t.slice(1);
+      }
+      return `Del ${one(s, s.getFullYear() !== e.getFullYear())} al ${one(e, true)}`;
+    }
+
+    // Mensaje de texto plano con emojis para WhatsApp, Telegram, SMS, etc.
+    // Solo lleva un enlace, al final, a la agenda completa.
+    function buildShareText(ev) {
+      const lines = [`${ev.emoji ? ev.emoji + ' ' : ''}${prettyTitle(ev.titulo)}`, ''];
+      lines.push(`📅 ${formatDateLong(ev)}`);
+      if (ev.hora) lines.push(`🕒 ${ev.hora}`);
+      if (ev.lugar) lines.push(`📍 ${ev.lugar}`);
+      if (ev.inscripcion) lines.push(`📝 Inscripción: ${ev.inscripcion}`);
+      if (ev.descripcion) lines.push('', ev.descripcion);
+      if (ev.programa) {
+        const items = ev.programa.split('|').map((x) => x.trim()).filter(Boolean);
+        if (items.length) lines.push('', 'Programa:', ...items.map((i) => `• ${i}`));
+      }
+      const appUrl = location.origin + location.pathname.replace(/index\.html$/, '');
+      lines.push('', '📲 Toda la agenda de El Viso, cuando quieras:', appUrl);
+      return lines.join('\n');
+    }
+
+    let toastTimer = null;
+    function showToast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { el.hidden = true; }, 2800);
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (e) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch (e2) {
+          return false;
+        }
+      }
+    }
+
+    // En el móvil abre el menú de compartir del sistema (WhatsApp, Telegram, SMS…).
+    // Si el dispositivo no lo permite, copia el texto para pegarlo donde se quiera.
+    async function shareEvent(ev) {
+      const text = buildShareText(ev);
+      if (navigator.share) {
+        try {
+          await navigator.share({ text });
+          return;
+        } catch (e) {
+          if (e && e.name === 'AbortError') return; // la persona canceló
+        }
+      }
+      const ok = await copyText(text);
+      showToast(ok ? 'Texto copiado. Pégalo donde quieras.' : 'No se ha podido copiar el texto.');
     }
 
     /* =========================================================
@@ -651,7 +757,7 @@
           </div>
         </div>`;
 
-      const shareBtn = `<a class="btn btn-share" href="${buildWhatsAppUrl(ev)}" target="_blank" rel="noopener noreferrer" aria-label="Compartir por WhatsApp">${ICONS.share}</a>`;
+      const shareBtn = `<button type="button" class="btn btn-share" data-share-index="${index}" aria-label="Compartir evento">${ICONS.share}</button>`;
 
       return `
         <article class="event-card">
@@ -711,6 +817,13 @@
     document.addEventListener('click', (e) => {
       if (e.target.closest('[data-poster-close]')) {
         closePoster();
+        return;
+      }
+
+      const shareBtnEl = e.target.closest('[data-share-index]');
+      if (shareBtnEl) {
+        const ev = currentEvents[Number(shareBtnEl.getAttribute('data-share-index'))];
+        if (ev) shareEvent(ev);
         return;
       }
 
@@ -874,6 +987,59 @@
         }
       }
     }
+
+    /* =========================================================
+       AVISO DISCRETO PARA INSTALAR LA APP
+       ========================================================= */
+    (function setupInstallHint() {
+      const hint = document.getElementById('installHint');
+      const btn = document.getElementById('installBtn');
+      const help = document.getElementById('installHelp');
+      const SEEN_KEY = 'agenda-el-viso-install-seen';
+      let deferredPrompt = null;
+
+      const isStandalone = () =>
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+        window.navigator.standalone === true;
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+      if (isStandalone()) return; // ya instalada: no se muestra nada
+
+      // Android / Chrome: el navegador avisa cuando se puede instalar.
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        hint.hidden = false;
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredPrompt = null;
+        hint.hidden = true;
+        help.hidden = true;
+      });
+
+      // iPhone / iPad: no hay aviso automático, solo se muestra la indicación.
+      if (isIOS) {
+        let seen = false;
+        try { seen = localStorage.getItem(SEEN_KEY) === '1'; } catch (e) { /* sin almacenamiento */ }
+        if (!seen) hint.hidden = false;
+      }
+
+      btn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          try { await deferredPrompt.userChoice; } catch (e) { /* ignorado */ }
+          deferredPrompt = null;
+          hint.hidden = true;
+          return;
+        }
+        if (isIOS) {
+          help.hidden = !help.hidden;
+          try { localStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* ignorado */ }
+        }
+      });
+    })();
 
     loadEvents();
 
