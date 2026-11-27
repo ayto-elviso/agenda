@@ -4,555 +4,232 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f2942" />
-  <meta name="description" content="Agenda de Eventos · Ayuntamiento de El Viso · Córdoba" />
-  <title>Agenda de Eventos · Ayuntamiento de El Viso</title>
+  <meta name="description" content="Aquí encontrarás todos los eventos, actividades y citas culturales de El Viso de los Pedroches." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Agenda de El Viso" />
+  <meta property="og:description" content="Todos los eventos, actividades y citas culturales de El Viso de los Pedroches." />
+  <meta property="og:image" content="https://ayto-elviso.github.io/agenda/cabecera.jpg" />
+  <title>Agenda de El Viso</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="logo.jpg" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <link rel="preload" as="image" href="cabecera.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --brand-navy: #0f2942;
-      --brand-navy-light: #1b436b;
-      --brand-gold: #e0a800;
+      --navy: #0f2942;
+      --gold: #e0a800;
       --bg-page: #f3f5f8;
       --bg-card: #ffffff;
+      --bg-soft: #eef2f7;
       --text-main: #182230;
       --text-muted: #526075;
-      --border-subtle: #e2e8f0;
-      --shadow-card: 0 2px 10px rgba(15, 23, 42, 0.05);
-      --radius-card: 14px;
-      --radius-pill: 999px;
-
-      /* Línea superior discreta de la caja de fecha según estación */
-      --season-bar: #60a5fa;
+      --border: #e2e8f0;
+      --border-strong: #dbe3ee;
+      --shadow-card: 0 1px 3px rgba(15, 41, 66, 0.06);
     }
 
-    /* Invierno: Dic, Ene, Feb (Azul suave) */
-    .season-invierno {
-      --season-bar: #60a5fa;
-    }
+    * { box-sizing: border-box; }
 
-    /* Primavera: Mar, Abr, May (Verde amarillento) */
-    .season-primavera {
-      --season-bar: #a3e635;
-    }
-
-    /* Verano: Jun, Jul, Ago (Rojo anaranjado) */
-    .season-verano {
-      --season-bar: #fb923c;
-    }
-
-    /* Otoño: Sep, Oct, Nov (Naranja amarillento) */
-    .season-otono {
-      --season-bar: #fbbf24;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    html { scroll-padding-top: 56px; }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--bg-page);
+      margin: 0;
+      background: var(--bg-page);
       color: var(--text-main);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      -webkit-text-size-adjust: 100%;
     }
 
-    /* Cabecera original con imagen superior e icono circular de El Viso */
+    button { font-family: inherit; cursor: pointer; }
+    a { color: var(--navy); }
+    :focus-visible { outline: 3px solid #6aa7ff; outline-offset: 2px; }
+
+    /* ---------- Cabecera ---------- */
     .site-header {
-      background-color: #ffffff;
-      border-bottom: 1px solid var(--border-subtle);
+      background: #fff;
+      border-bottom: 1px solid var(--border);
       text-align: center;
-      padding-bottom: 1.45rem;
+      padding-bottom: 22px;
     }
-
-    .header-banner {
-      width: 100%;
-      height: 155px;
-      overflow: hidden;
-      background-color: var(--brand-navy);
-    }
-
-    .header-banner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
+    .header-banner { height: 150px; background: var(--navy); }
+    .header-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .header-logo-wrap {
-      width: 96px;
-      height: 96px;
-      margin: -48px auto 0.75rem;
-      background-color: #ffffff;
+      width: 92px; height: 92px;
+      margin: -46px auto 12px;
+      background: #fff;
       border-radius: 50%;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      box-shadow: 0 4px 14px rgba(15, 41, 66, 0.16);
       padding: 10px;
       position: relative;
-      z-index: 2;
     }
-
-    .header-logo-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 50%;
-      display: block;
-    }
-
+    .header-logo-wrap img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; display: block; }
     .header-title {
-      font-size: 1.65rem;
-      font-weight: 800;
-      color: var(--brand-navy);
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-      padding: 0 1rem;
+      margin: 0;
+      font-size: 28px; line-height: 1.15; font-weight: 800;
+      letter-spacing: -0.02em; color: var(--navy);
     }
-
     .header-subtitle {
-      margin-top: 0.25rem;
-      font-size: 0.92rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      padding: 0 1rem;
+      margin: 8px auto 0; max-width: 300px; padding: 0 8px;
+      font-size: 14px; line-height: 1.5; color: var(--text-muted);
     }
 
-    /* Contenedor principal */
-    .main-container {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 1.4rem 1rem 2.5rem;
-    }
+    /* ---------- Contenido ---------- */
+    .main-container { max-width: 720px; margin: 0 auto; }
 
-    .month-section {
-      margin-bottom: 2.1rem;
-    }
-
-    /* Cabecera de mes con barra vertical amarilla */
+    /* Mes pegajoso: no poner overflow en body ni en contenedores superiores */
     .month-heading {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 1.32rem;
-      font-weight: 800;
-      color: var(--brand-navy);
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      margin-bottom: 0.95rem;
+      position: sticky; top: 0; z-index: 5;
+      margin: 0; height: 50px;
+      display: flex; align-items: center; gap: 11px;
+      padding: 0 16px;
+      background: var(--navy); color: #fff;
+      font-size: 18px; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase;
     }
-
     .month-heading::before {
-      content: "";
-      display: inline-block;
-      width: 4px;
-      height: 1.2em;
-      background-color: var(--brand-gold);
-      border-radius: 2px;
-      flex-shrink: 0;
+      content: ''; width: 5px; height: 22px; border-radius: 3px; background: var(--gold);
     }
+    .events-list { display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 22px; }
 
-    .events-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-    }
-
-    /* Tarjeta de evento: limpia, sin resaltar medianos/grandes */
+    /* ---------- Tarjeta ---------- */
     .event-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-card);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
       box-shadow: var(--shadow-card);
-      display: flex;
-      align-items: flex-start;
-      padding: 0.95rem;
-      gap: 0.95rem;
     }
-
-    /* Caja de fecha discreta: fondo neutro y solo línea superior de estación */
-    .event-date {
-      flex: 0 0 74px;
-      width: 74px;
-      background-color: #f8fafc;
-      border: 1px solid var(--border-subtle);
-      border-top: 4px solid var(--season-bar);
-      border-radius: 10px;
-      padding: 0.5rem 0.3rem 0.55rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      text-align: center;
-      user-select: none;
+    .event-date-band {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 10px 16px;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--border);
+      border-radius: 15px 15px 0 0;
     }
-
-    .today-pill {
-      background-color: var(--brand-navy);
-      color: #ffffff;
-      font-size: 0.6rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      padding: 0.1rem 0.4rem;
-      border-radius: var(--radius-pill);
-      margin-bottom: 0.35rem;
-      text-transform: uppercase;
+    .event-date-text {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 800; color: var(--navy);
     }
+    .event-date-text svg { width: 16px; height: 16px; flex: 0 0 auto; }
 
-    .date-point {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      line-height: 1.15;
+    .badge {
+      font-size: 11.5px; font-weight: 800;
+      padding: 4px 10px; border-radius: 999px; white-space: nowrap;
     }
+    .badge-hoy { background: var(--gold); color: var(--navy); }
+    .badge-manana { background: var(--navy); color: #fff; }
+    .badge-semana { background: #fdf3d0; color: #6b4e00; }
+    .badge-curso { background: #dfe7f1; color: var(--navy); }
 
-    .date-dow {
-      font-size: 0.74rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .date-day {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--text-main);
-      margin: 0.08rem 0;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
-    }
-
-    .date-month {
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
-    .date-divider {
-      display: block;
-      width: 38px;
-      height: 1px;
-      background-color: #cbd5e1;
-      margin: 0.42rem 0;
-    }
-
-    /* Columna derecha: todo alineado arriba */
-    .event-body {
-      flex: 1 1 auto;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-    }
-
-    /* Línea superior de hora y lugar */
-    .event-meta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.25rem 0.85rem;
-      margin-bottom: 0.3rem;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .meta-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.28rem;
-    }
-
-    .meta-item svg {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-      stroke: var(--text-muted);
-    }
-
-    /* Título con emoji alineado a la izquierda */
-    .event-title-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.45rem;
-      width: 100%;
-    }
-
-    .event-emoji {
-      font-size: 1.15rem;
-      line-height: 1.28;
-      flex-shrink: 0;
-    }
-
+    .event-content { padding: 16px; }
     .event-title {
-      font-size: 1.02rem;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1.28;
-      letter-spacing: -0.01em;
+      margin: 0; font-size: 18px; line-height: 1.25; font-weight: 800;
+      color: var(--text-main); letter-spacing: -0.01em;
+      overflow-wrap: anywhere;
     }
+    .event-emoji { margin-right: 2px; }
 
-    .event-desc {
-      margin-top: 0.45rem;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.5;
+    .event-info { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .info-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14.5px; font-weight: 600; line-height: 1.35; color: var(--text-main);
     }
-
-    /* Bloque de inscripción discreto */
-    .event-inscription {
-      margin-top: 0.55rem;
-      width: 100%;
-      background-color: #f8fafc;
-      border-left: 3px solid #cbd5e1;
-      padding: 0.45rem 0.7rem;
-      border-radius: 0 8px 8px 0;
-      font-size: 0.84rem;
-      color: var(--text-main);
+    .info-row > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+    .info-icon {
+      width: 30px; height: 30px; flex: 0 0 auto;
+      border-radius: 50%; background: var(--bg-soft); color: var(--navy);
+      display: flex; align-items: center; justify-content: center;
     }
+    .info-icon svg { width: 17px; height: 17px; }
 
-    .event-inscription strong {
-      color: var(--brand-navy);
+    .event-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+
+    .event-actions {
+      display: flex; gap: 8px;
+      margin-top: 14px; padding-top: 14px;
+      border-top: 2px dotted #cbd5e1;
     }
-
-    .event-inscription a {
-      color: var(--brand-navy-light);
-      font-weight: 700;
-      text-decoration: underline;
+    .btn {
+      min-height: 46px; border-radius: 10px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 14px; font-weight: 700; text-decoration: none;
     }
-
-    /* Fila horizontal de botones: Ver programación + Guardar */
-    .event-actions-row {
-      margin-top: 0.75rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.45rem;
-      width: 100%;
+    .btn svg { width: 17px; height: 17px; flex: 0 0 auto; }
+    .btn-primary { flex: 1; border: 0; background: var(--navy); color: #fff; }
+    .btn-primary svg { width: 16px; height: 16px; transition: transform .2s; }
+    .btn-primary[aria-expanded="true"] svg { transform: rotate(180deg); }
+    .btn-save {
+      padding: 0 12px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--border-strong); background: #fff; color: var(--navy);
     }
-
-    .program-toggle {
-      appearance: none;
-      background-color: #f1f5f9;
-      border: 1px solid #dbe3ee;
-      color: var(--brand-navy);
-      font-family: inherit;
-      font-size: 0.81rem;
-      font-weight: 700;
-      padding: 0.42rem 0.78rem;
-      border-radius: 8px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: background-color 0.15s ease;
+    .btn-share {
+      width: 46px; border: 1px solid #bfe3cc; background: #f0faf4; color: #15803d;
     }
+    .btn-share svg { width: 18px; height: 18px; }
+    .btn-only-save { flex: 1; }
 
-    .program-toggle:hover {
-      background-color: #e2e8f0;
-    }
-
-    .program-toggle svg {
-      width: 14px;
-      height: 14px;
-      transition: transform 0.18s ease;
-    }
-
-    .program-toggle[aria-expanded="true"] svg {
-      transform: rotate(180deg);
-    }
-
-    .cal-wrapper {
-      position: relative;
-    }
-
-    .cal-btn {
-      appearance: none;
-      background-color: transparent;
-      border: 1px solid #e2e8f0;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.79rem;
-      font-weight: 600;
-      padding: 0.42rem 0.68rem;
-      border-radius: 8px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: all 0.15s ease;
-    }
-
-    .cal-btn:hover {
-      border-color: #cbd5e1;
-      color: var(--brand-navy);
-      background-color: #f8fafc;
-    }
-
+    .cal-wrapper { position: relative; display: flex; }
+    .cal-wrapper.grow { flex: 1; }
+    .cal-wrapper.grow .btn-save { flex: 1; }
     .cal-menu {
-      position: absolute;
-      left: 0;
-      top: calc(100% + 6px);
-      background-color: #ffffff;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.14);
-      padding: 0.35rem;
-      min-width: 185px;
-      z-index: 30;
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
+      position: absolute; right: 0; bottom: calc(100% + 8px);
+      min-width: 220px; z-index: 20;
+      background: #fff; border: 1px solid var(--border-strong); border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(15, 41, 66, 0.18);
+      padding: 6px; display: flex; flex-direction: column;
     }
-
-    .cal-menu[hidden] {
-      display: none;
+    .cal-menu[hidden] { display: none; }
+    .cal-menu a, .cal-menu button {
+      display: block; width: 100%; text-align: left;
+      padding: 12px 12px; border: 0; background: transparent; border-radius: 8px;
+      font-size: 14px; font-weight: 600; color: var(--text-main); text-decoration: none;
     }
+    .cal-menu a:hover, .cal-menu button:hover { background: var(--bg-soft); }
 
-    .cal-menu a,
-    .cal-menu button {
-      appearance: none;
-      border: none;
-      background: transparent;
-      text-align: left;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-main);
-      text-decoration: none;
-      padding: 0.46rem 0.65rem;
-      border-radius: 7px;
-      cursor: pointer;
-      display: block;
-      width: 100%;
-    }
-
-    .cal-menu a:hover,
-    .cal-menu button:hover {
-      background-color: #f1f5f9;
-      color: var(--brand-navy);
-    }
-
-    /* Lista desplegable de programación */
     .program-list {
-      margin-top: 0.55rem;
-      width: 100%;
-      padding: 0.6rem 0.8rem;
-      background-color: #f8fafc;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      font-size: 0.84rem;
+      list-style: none; margin: 14px 0 0; padding: 4px 14px;
+      background: #f8fafc; border: 1px solid var(--border); border-radius: 10px;
     }
-
-    .program-list[hidden] {
-      display: none;
-    }
-
+    .program-list[hidden] { display: none; }
     .program-list li {
-      position: relative;
-      padding-left: 0.8rem;
-      color: var(--text-main);
+      padding: 10px 0; font-size: 14px; line-height: 1.4; color: var(--text-main);
+      border-bottom: 1px dotted #cbd5e1;
     }
+    .program-list li:last-child { border-bottom: 0; }
 
-    .program-list li::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.54em;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background-color: var(--brand-navy);
-    }
-
-    /* Estados de carga y vacío */
-    .state-box {
-      background-color: #ffffff;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      padding: 2rem 1.4rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.93rem;
-    }
-
+    /* ---------- Estados y pie ---------- */
+    .state-box { text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 15px; line-height: 1.5; }
     .spinner {
-      width: 26px;
-      height: 26px;
-      border: 3px solid #e2e8f0;
-      border-top-color: var(--brand-navy);
-      border-radius: 50%;
-      margin: 0 auto 0.8rem;
-      animation: spin 0.75s linear infinite;
+      width: 34px; height: 34px; margin: 0 auto 14px;
+      border: 3px solid var(--border-strong); border-top-color: var(--navy);
+      border-radius: 50%; animation: spin .8s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .site-footer { padding: 4px 16px 32px; text-align: center; font-size: 12px; color: var(--text-muted); }
+    .site-footer p { margin: 4px 0; }
+
+    @media (min-width: 700px) {
+      .header-banner { height: 220px; }
+      .header-title { font-size: 34px; }
     }
-
-    .site-footer {
-      text-align: center;
-      padding: 0.5rem 1rem 2rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    @media (max-width: 540px) {
-      .header-banner {
-        height: 140px;
-      }
-
-      .event-card {
-        padding: 0.82rem;
-        gap: 0.78rem;
-      }
-
-      .event-date {
-        flex: 0 0 68px;
-        width: 68px;
-        padding: 0.48rem 0.25rem 0.52rem;
-      }
-
-      .date-dow,
-      .date-month {
-        font-size: 0.7rem;
-      }
-
-      .date-day {
-        font-size: 1.3rem;
-      }
-
-      .event-title {
-        font-size: 0.96rem;
-      }
-
-      .month-heading {
-        font-size: 1.24rem;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      .spinner { animation-duration: 2s; }
+      .btn-primary svg { transition: none; }
     }
   </style>
 </head>
 <body>
   <header class="site-header">
     <div class="header-banner">
-      <img src="cabecera.jpg" alt="El Viso" />
+      <img src="cabecera.jpg" width="828" height="315" alt="" />
     </div>
     <div class="header-logo-wrap">
-      <img src="logo.jpg" alt="Ayuntamiento de El Viso" />
+      <img src="logo.jpg" width="1080" height="1080" alt="Escudo de El Viso" />
     </div>
-    <h1 class="header-title">Agenda de Eventos</h1>
-    <p class="header-subtitle">Ayuntamiento de El Viso · Córdoba</p>
+    <h1 class="header-title">Agenda de El Viso</h1>
+    <p class="header-subtitle">Aquí encontrarás todos los eventos, actividades y citas culturales de El Viso de los Pedroches.</p>
   </header>
 
   <main class="main-container" id="agendaContainer">
@@ -563,27 +240,37 @@
   </main>
 
   <footer class="site-footer">
-    <p>Ayuntamiento de El Viso · Programación actualizada</p>
+    <p id="updateInfo">Ayuntamiento de El Viso</p>
   </footer>
 
   <script>
+    /* =========================================================
+       CONFIGURACIÓN
+       ========================================================= */
     const SHEET_ID = '1ZQwG-G8eXJAhazxRedvAp55pHL5357xH2nWGz3hzzsE';
     const SHEET_NAME = 'Eventos';
     const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+    const CACHE_KEY = 'agenda-el-viso-cache-v1';
 
-    const DAYS_3 = ['Dom.', 'Lun.', 'Mar.', 'Mié.', 'Jue.', 'Vie.', 'Sáb.'];
-    const MONTHS_3 = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.'];
+    // Si un título está escrito TODO en mayúsculas en el Excel, se muestra con
+    // mayúscula inicial en cada palabra importante. Pon false para respetarlo tal cual.
+    const NORMALIZE_UPPERCASE_TITLES = true;
+
+    const DAYS_FULL = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const DAYS_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const MONTHS_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
     const MONTHS_FULL = [
       'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
       'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
     ];
+    const LOWER_WORDS = new Set(['a', 'al', 'con', 'de', 'del', 'e', 'el', 'en', 'la', 'las', 'lo', 'los', 'o', 'para', 'por', 'u', 'un', 'una', 'y']);
 
-    function getSeasonClassByMonth(monthIndex0) {
-      if (monthIndex0 === 11 || monthIndex0 === 0 || monthIndex0 === 1) return 'season-invierno';
-      if (monthIndex0 >= 2 && monthIndex0 <= 4) return 'season-primavera';
-      if (monthIndex0 >= 5 && monthIndex0 <= 7) return 'season-verano';
-      return 'season-otono';
-    }
+    let currentEvents = [];
+
+    /* =========================================================
+       UTILIDADES
+       ========================================================= */
+    const pad = (n) => String(n).padStart(2, '0');
 
     function parseSheetDate(raw) {
       if (!raw) return null;
@@ -591,35 +278,49 @@
       if (!str) return null;
 
       const gvizMatch = str.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)/);
-      if (gvizMatch) {
-        return new Date(Number(gvizMatch[1]), Number(gvizMatch[2]), Number(gvizMatch[3]));
-      }
+      if (gvizMatch) return new Date(Number(gvizMatch[1]), Number(gvizMatch[2]), Number(gvizMatch[3]));
 
       const isoMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
-      if (isoMatch) {
-        return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
-      }
+      if (isoMatch) return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
 
       const esMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-      if (esMatch) {
-        return new Date(Number(esMatch[3]), Number(esMatch[2]) - 1, Number(esMatch[1]));
-      }
+      if (esMatch) return new Date(Number(esMatch[3]), Number(esMatch[2]) - 1, Number(esMatch[1]));
 
       return null;
     }
 
     function isSameDay(a, b) {
-      return a && b &&
+      return !!a && !!b &&
         a.getFullYear() === b.getFullYear() &&
         a.getMonth() === b.getMonth() &&
         a.getDate() === b.getDate();
     }
 
+    function startOfToday() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function daysBetween(from, to) {
+      return Math.round((to - from) / 86400000);
+    }
+
+    // Devuelve todas las horas encontradas en minutos: "18:00 a 20:00 h" -> [1080, 1200]
+    function extractTimes(horaStr) {
+      const result = [];
+      const re = /(\d{1,2}):(\d{2})/g;
+      let m;
+      while ((m = re.exec(String(horaStr || ''))) !== null) {
+        const hh = Number(m[1]);
+        const mm = Number(m[2]);
+        if (hh < 24 && mm < 60) result.push(hh * 60 + mm);
+      }
+      return result;
+    }
+
     function parseTimeMinutes(horaStr) {
-      if (!horaStr) return 9999;
-      const match = String(horaStr).match(/(\d{1,2}):(\d{2})/);
-      if (!match) return 9999;
-      return Number(match[1]) * 60 + Number(match[2]);
+      const t = extractTimes(horaStr);
+      return t.length ? t[0] : 9999;
     }
 
     function escapeHtml(text) {
@@ -637,365 +338,414 @@
       return escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
     }
 
-    function formatGoogleCalendarDates(startDate, endDate, horaStr) {
-      const timeMatch = horaStr ? String(horaStr).match(/(\d{1,2}):(\d{2})/) : null;
-      const pad = (n) => String(n).padStart(2, '0');
+    function prettyTitle(title) {
+      const t = String(title || '').trim();
+      if (!NORMALIZE_UPPERCASE_TITLES) return t;
+      if (t !== t.toUpperCase() || t === t.toLowerCase()) return t; // ya viene en minúsculas/mixto
+      return t.toLowerCase().split(/(\s+)/).map((word, i) => {
+        if (/^\s+$/.test(word) || !word) return word;
+        const bare = word.replace(/[^a-záéíóúüñ]/gi, '');
+        if (i > 0 && LOWER_WORDS.has(bare)) return word;
+        return word.replace(/[a-záéíóúüñ]/i, (c) => c.toUpperCase());
+      }).join('');
+    }
 
-      if (timeMatch && isSameDay(startDate, endDate)) {
-        const hh = Number(timeMatch[1]);
-        const mm = Number(timeMatch[2]);
-        const endHh = (hh + 1) % 24;
-        const ymd = `${startDate.getFullYear()}${pad(startDate.getMonth() + 1)}${pad(startDate.getDate())}`;
-        return `${ymd}T${pad(hh)}${pad(mm)}00/${ymd}T${pad(endHh)}${pad(mm)}00`;
+    function formatDateLabel(ev) {
+      const s = ev.startDate;
+      const e = ev.endDate;
+      if (!e || isSameDay(s, e)) {
+        return `${DAYS_FULL[s.getDay()]} ${s.getDate()} ${MONTHS_SHORT[s.getMonth()]}`;
       }
+      return `${DAYS_SHORT[s.getDay()]} ${s.getDate()} ${MONTHS_SHORT[s.getMonth()]} – ${DAYS_SHORT[e.getDay()]} ${e.getDate()} ${MONTHS_SHORT[e.getMonth()]}`;
+    }
 
-      const nextDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() + 1);
-      const startYmd = `${startDate.getFullYear()}${pad(startDate.getMonth() + 1)}${pad(startDate.getDate())}`;
-      const endYmd = `${nextDay.getFullYear()}${pad(nextDay.getMonth() + 1)}${pad(nextDay.getDate())}`;
-      return `${startYmd}/${endYmd}`;
+    function getBadge(ev, today) {
+      const isRange = !isSameDay(ev.startDate, ev.endDate);
+      if (isSameDay(ev.startDate, today)) return { cls: 'badge-hoy', text: 'Hoy' };
+      if (ev.startDate < today && ev.endDate >= today) {
+        return isRange ? { cls: 'badge-curso', text: 'En curso' } : null;
+      }
+      const d = daysBetween(today, ev.startDate);
+      if (d === 1) return { cls: 'badge-manana', text: 'Mañana' };
+      if (d >= 2 && d <= 7) return { cls: 'badge-semana', text: 'Esta semana' };
+      return null;
+    }
+
+    /* =========================================================
+       CALENDARIO (Google Calendar / .ics) Y WHATSAPP
+       ========================================================= */
+    const fmtDate = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+
+    function fmtDateTime(d, minutes) {
+      const dt = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, minutes);
+      return `${fmtDate(dt)}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
+    }
+
+    // Eventos de un día con hora: usa el tramo horario si existe (o 1 hora por defecto).
+    // Si termina antes de empezar (p. ej. 23:30 a 01:00) pasa al día siguiente.
+    function getEventTiming(ev) {
+      const times = extractTimes(ev.hora);
+      if (times.length && isSameDay(ev.startDate, ev.endDate)) {
+        const start = times[0];
+        let end = times.length > 1 ? times[1] : start + 60;
+        if (end <= start) end += 1440;
+        return { timed: true, start: fmtDateTime(ev.startDate, start), end: fmtDateTime(ev.startDate, end) };
+      }
+      const next = new Date(ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate() + 1);
+      return { timed: false, start: fmtDate(ev.startDate), end: fmtDate(next) };
+    }
+
+    function buildDetails(ev) {
+      const parts = [];
+      if (ev.descripcion) parts.push(ev.descripcion);
+      if (ev.programa) parts.push('Programa: ' + ev.programa.replace(/\s*\|\s*/g, ' · '));
+      if (ev.inscripcion) parts.push('Inscripción: ' + ev.inscripcion);
+      return parts.join('\n\n');
+    }
+
+    function buildLocation(ev) {
+      return ev.lugar ? `${ev.lugar}, El Viso (Córdoba)` : 'El Viso, Córdoba';
     }
 
     function buildGoogleCalendarUrl(ev) {
-      const dates = formatGoogleCalendarDates(ev.startDate, ev.endDate, ev.hora);
-      const detailsParts = [];
-      if (ev.descripcion) detailsParts.push(ev.descripcion);
-      if (ev.programa) detailsParts.push('Programa: ' + ev.programa.replace(/\s*\|\s*/g, ' · '));
-      if (ev.inscripcion) detailsParts.push('Inscripción: ' + ev.inscripcion);
-
+      const t = getEventTiming(ev);
       const params = new URLSearchParams({
         action: 'TEMPLATE',
-        text: ev.titulo,
-        dates: dates,
-        details: detailsParts.join('\n\n'),
-        location: ev.lugar ? `${ev.lugar}, El Viso (Córdoba)` : 'El Viso, Córdoba',
+        text: prettyTitle(ev.titulo),
+        dates: `${t.start}/${t.end}`,
+        details: buildDetails(ev),
+        location: buildLocation(ev),
         ctz: 'Europe/Madrid'
       });
-
       return `https://calendar.google.com/calendar/render?${params.toString()}`;
     }
 
-    function downloadIcsFile(ev) {
-      const pad = (n) => String(n).padStart(2, '0');
-      const timeMatch = ev.hora ? String(ev.hora).match(/(\d{1,2}):(\d{2})/) : null;
-      let dtStartLine = '';
-      let dtEndLine = '';
-
-      if (timeMatch && isSameDay(ev.startDate, ev.endDate)) {
-        const hh = Number(timeMatch[1]);
-        const mm = Number(timeMatch[2]);
-        const endHh = (hh + 1) % 24;
-        const ymd = `${ev.startDate.getFullYear()}${pad(ev.startDate.getMonth() + 1)}${pad(ev.startDate.getDate())}`;
-        dtStartLine = `DTSTART;TZID=Europe/Madrid:${ymd}T${pad(hh)}${pad(mm)}00`;
-        dtEndLine = `DTEND;TZID=Europe/Madrid:${ymd}T${pad(endHh)}${pad(mm)}00`;
-      } else {
-        const nextDay = new Date(ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate() + 1);
-        const startYmd = `${ev.startDate.getFullYear()}${pad(ev.startDate.getMonth() + 1)}${pad(ev.startDate.getDate())}`;
-        const endYmd = `${nextDay.getFullYear()}${pad(nextDay.getMonth() + 1)}${pad(nextDay.getDate())}`;
-        dtStartLine = `DTSTART;VALUE=DATE:${startYmd}`;
-        dtEndLine = `DTEND;VALUE=DATE:${endYmd}`;
-      }
-
-      const desc = [ev.descripcion, ev.programa ? 'Programa: ' + ev.programa : '', ev.inscripcion ? 'Inscripción: ' + ev.inscripcion : '']
-        .filter(Boolean)
-        .join('\\n\\n')
+    function escapeIcs(text) {
+      return String(text || '')
+        .replace(/\\/g, '\\\\')
+        .replace(/;/g, '\\;')
         .replace(/,/g, '\\,')
-        .replace(/;/g, '\\;');
+        .replace(/\r?\n/g, '\\n');
+    }
 
-      const location = (ev.lugar ? `${ev.lugar}, El Viso (Córdoba)` : 'El Viso, Córdoba')
-        .replace(/,/g, '\\,');
+    // Las líneas de un .ics no deben pasar de 75 bytes: se parten y continúan con un espacio.
+    function foldIcsLine(line) {
+      const enc = new TextEncoder();
+      const out = [];
+      let current = '';
+      let bytes = 0;
+      for (const ch of line) {
+        const len = enc.encode(ch).length;
+        const limit = out.length === 0 ? 75 : 74;
+        if (bytes + len > limit) {
+          out.push(current);
+          current = '';
+          bytes = 0;
+        }
+        current += ch;
+        bytes += len;
+      }
+      out.push(current);
+      return out.join('\r\n ');
+    }
 
-      const icsContent = [
+    function slugify(text) {
+      return String(text || '').toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'evento';
+    }
+
+    function downloadIcsFile(ev) {
+      const t = getEventTiming(ev);
+      const title = prettyTitle(ev.titulo);
+      const lines = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
         'PRODID:-//Ayuntamiento de El Viso//Agenda Publica//ES',
         'CALSCALE:GREGORIAN',
         'BEGIN:VEVENT',
-        `UID:${Date.now()}-${Math.random().toString(36).slice(2)}@elviso.es`,
+        `UID:${fmtDate(ev.startDate)}-${slugify(title)}@elviso.es`,
         `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
-        dtStartLine,
-        dtEndLine,
-        `SUMMARY:${ev.titulo.replace(/,/g, '\\,')}`,
-        `DESCRIPTION:${desc}`,
-        `LOCATION:${location}`,
+        t.timed ? `DTSTART:${t.start}` : `DTSTART;VALUE=DATE:${t.start}`,
+        t.timed ? `DTEND:${t.end}` : `DTEND;VALUE=DATE:${t.end}`,
+        `SUMMARY:${escapeIcs(title)}`,
+        `DESCRIPTION:${escapeIcs(buildDetails(ev))}`,
+        `LOCATION:${escapeIcs(buildLocation(ev))}`,
         'END:VEVENT',
         'END:VCALENDAR'
-      ].join('\r\n');
+      ].map(foldIcsLine);
 
-      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/calendar;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${ev.titulo.toLowerCase().replace(/[^a-z0-9áéíóúñ]+/gi, '-')}.ics`;
+      a.download = `${slugify(title)}.ics`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    function renderDateColumn(startDate, endDate, isToday) {
-      const isRange = endDate && !isSameDay(startDate, endDate);
-      const todayBadge = isToday ? `<span class="today-pill">Hoy</span>` : '';
+    function buildWhatsAppUrl(ev) {
+      const lines = [`${ev.emoji ? ev.emoji + ' ' : ''}*${prettyTitle(ev.titulo)}*`];
+      lines.push(formatDateLabel(ev) + (ev.hora ? ` · ${ev.hora}` : ''));
+      if (ev.lugar) lines.push(`Lugar: ${ev.lugar}`);
+      lines.push('', 'Agenda de El Viso: ' + location.origin + location.pathname);
+      return 'https://wa.me/?text=' + encodeURIComponent(lines.join('\n'));
+    }
 
-      if (isRange) {
-        return `
-          <div class="event-date">
-            ${todayBadge}
-            <div class="date-point">
-              <span class="date-dow">De ${DAYS_3[startDate.getDay()]}</span>
-              <span class="date-day">${startDate.getDate()}</span>
-              <span class="date-month">${MONTHS_3[startDate.getMonth()]}</span>
-            </div>
-            <span class="date-divider" aria-hidden="true"></span>
-            <div class="date-point">
-              <span class="date-dow">A ${DAYS_3[endDate.getDay()]}</span>
-              <span class="date-day">${endDate.getDate()}</span>
-              <span class="date-month">${MONTHS_3[endDate.getMonth()]}</span>
-            </div>
-          </div>
-        `;
-      }
+    /* =========================================================
+       RENDER
+       ========================================================= */
+    const ICONS = {
+      calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>',
+      calendarPlus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M12 13v6M9 16h6"></path></svg>',
+      clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
+      pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>',
+      clipboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M9 14l2 2 4-4"></path></svg>',
+      chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>',
+      share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>'
+    };
 
-      return `
-        <div class="event-date">
-          ${todayBadge}
-          <div class="date-point">
-            <span class="date-dow">${DAYS_3[startDate.getDay()]}</span>
-            <span class="date-day">${startDate.getDate()}</span>
-            <span class="date-month">${MONTHS_3[startDate.getMonth()]}</span>
-          </div>
-        </div>
-      `;
+    function infoRow(icon, innerHtml) {
+      return `<div class="info-row"><span class="info-icon">${icon}</span><span>${innerHtml}</span></div>`;
     }
 
     function renderEventCard(ev, index, today) {
-      const seasonClass = getSeasonClassByMonth(ev.startDate.getMonth());
-      const isToday = today >= ev.startDate && today <= ev.endDate;
-      const dateHtml = renderDateColumn(ev.startDate, ev.endDate, isToday);
+      const badge = getBadge(ev, today);
+      const title = prettyTitle(ev.titulo);
 
-      const metaItems = [];
-      if (ev.hora) {
-        metaItems.push(`
-          <span class="meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span>${escapeHtml(ev.hora)}</span>
-          </span>
-        `);
-      }
-      if (ev.lugar) {
-        metaItems.push(`
-          <span class="meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            <span>${escapeHtml(ev.lugar)}</span>
-          </span>
-        `);
-      }
+      const rows = [];
+      if (ev.hora) rows.push(infoRow(ICONS.clock, escapeHtml(ev.hora)));
+      if (ev.lugar) rows.push(infoRow(ICONS.pin, escapeHtml(ev.lugar)));
+      if (ev.inscripcion) rows.push(infoRow(ICONS.clipboard, `<strong>Inscripción:</strong> ${linkify(ev.inscripcion)}`));
 
-      const metaHtml = metaItems.length ? `<div class="event-meta">${metaItems.join('')}</div>` : '';
-      const descHtml = ev.descripcion ? `<p class="event-desc">${escapeHtml(ev.descripcion)}</p>` : '';
-
-      const inscriptionHtml = ev.inscripcion
-        ? `<div class="event-inscription"><strong>Inscripción:</strong> ${linkify(ev.inscripcion)}</div>`
-        : '';
-
-      let programBtnHtml = '';
-      let programListHtml = '';
+      let programBtn = '';
+      let programList = '';
       if (ev.programa) {
         const items = ev.programa.split('|').map((s) => s.trim()).filter(Boolean);
         if (items.length) {
           const progId = `prog-${index}`;
-          programBtnHtml = `
-            <button type="button" class="program-toggle" aria-expanded="false" aria-controls="${progId}">
-              <span>Ver programación</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
-          `;
-          programListHtml = `
-            <ul class="program-list" id="${progId}" hidden>
-              ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
-            </ul>
-          `;
+          programBtn = `<button type="button" class="btn btn-primary program-toggle" aria-expanded="false" aria-controls="${progId}"><span>Ver programación</span>${ICONS.chevron}</button>`;
+          programList = `<ul class="program-list" id="${progId}" hidden>${items.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`;
         }
       }
 
-      const calMenuId = `cal-menu-${index}`;
-      const gcalUrl = buildGoogleCalendarUrl(ev);
+      const menuId = `cal-menu-${index}`;
+      const saveBtn = `
+        <div class="cal-wrapper${programBtn ? '' : ' grow'}">
+          <button type="button" class="btn btn-save cal-btn" aria-expanded="false" aria-controls="${menuId}">${ICONS.calendarPlus}<span>Guardar</span></button>
+          <div class="cal-menu" id="${menuId}" hidden>
+            <a href="${buildGoogleCalendarUrl(ev)}" target="_blank" rel="noopener noreferrer">Google Calendar</a>
+            <button type="button" data-ics-index="${index}">Apple / Outlook (.ics)</button>
+          </div>
+        </div>`;
+
+      const shareBtn = `<a class="btn btn-share" href="${buildWhatsAppUrl(ev)}" target="_blank" rel="noopener noreferrer" aria-label="Compartir por WhatsApp">${ICONS.share}</a>`;
 
       return `
-        <article class="event-card ${seasonClass}">
-          ${dateHtml}
-          <div class="event-body">
-            ${metaHtml}
-            <div class="event-title-row">
-              ${ev.emoji ? `<span class="event-emoji" aria-hidden="true">${escapeHtml(ev.emoji)}</span>` : ''}
-              <h3 class="event-title">${escapeHtml(ev.titulo)}</h3>
-            </div>
-            ${descHtml}
-            ${inscriptionHtml}
-            <div class="event-actions-row">
-              ${programBtnHtml}
-              <div class="cal-wrapper">
-                <button type="button" class="cal-btn" aria-expanded="false" aria-controls="${calMenuId}">
-                  <span aria-hidden="true">📅</span>
-                  <span>Guardar</span>
-                </button>
-                <div class="cal-menu" id="${calMenuId}" hidden>
-                  <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer">Google Calendar</a>
-                  <button type="button" data-ics-index="${index}">Apple / Outlook (.ics)</button>
-                </div>
-              </div>
-            </div>
-            ${programListHtml}
+        <article class="event-card">
+          <div class="event-date-band">
+            <span class="event-date-text">${ICONS.calendar}<span>${escapeHtml(formatDateLabel(ev))}</span></span>
+            ${badge ? `<span class="badge ${badge.cls}">${badge.text}</span>` : ''}
           </div>
-        </article>
-      `;
+          <div class="event-content">
+            <h3 class="event-title">${ev.emoji ? `<span class="event-emoji" aria-hidden="true">${escapeHtml(ev.emoji)}</span> ` : ''}${escapeHtml(title)}</h3>
+            ${rows.length ? `<div class="event-info">${rows.join('')}</div>` : ''}
+            ${ev.descripcion ? `<p class="event-desc">${escapeHtml(ev.descripcion)}</p>` : ''}
+            <div class="event-actions">${programBtn}${saveBtn}${shareBtn}</div>
+            ${programList}
+          </div>
+        </article>`;
     }
 
     function renderAgenda(events) {
+      currentEvents = events;
       const container = document.getElementById('agendaContainer');
 
       if (!events.length) {
-        container.innerHTML = `
-          <div class="state-box">
-            <p>No hay actividades próximas publicadas en este momento.</p>
-          </div>
-        `;
+        container.innerHTML = '<div class="state-box"><p>No hay actividades próximas publicadas en este momento.</p></div>';
         return;
       }
 
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
+      const today = startOfToday();
       const groups = new Map();
       events.forEach((ev, idx) => {
         ev._idx = idx;
-        const key = `${ev.startDate.getFullYear()}-${String(ev.startDate.getMonth() + 1).padStart(2, '0')}`;
+        // Un evento ya empezado se agrupa en el mes actual, no en el de su inicio.
+        const groupDate = ev.startDate < today ? today : ev.startDate;
+        const key = `${groupDate.getFullYear()}-${pad(groupDate.getMonth() + 1)}`;
         if (!groups.has(key)) {
-          groups.set(key, {
-            key,
-            label: `${MONTHS_FULL[ev.startDate.getMonth()]} ${ev.startDate.getFullYear()}`,
-            items: []
-          });
+          groups.set(key, { label: `${MONTHS_FULL[groupDate.getMonth()]} ${groupDate.getFullYear()}`, items: [] });
         }
         groups.get(key).items.push(ev);
       });
 
-      const groupList = Array.from(groups.values());
-
-      container.innerHTML = groupList.map((group) => `
+      container.innerHTML = Array.from(groups.values()).map((group) => `
         <section class="month-section">
           <h2 class="month-heading">${group.label}</h2>
           <div class="events-list">
             ${group.items.map((ev) => renderEventCard(ev, ev._idx, today)).join('')}
           </div>
-        </section>
-      `).join('');
+        </section>`).join('');
+    }
 
-      container.addEventListener('click', (e) => {
-        const progBtn = e.target.closest('.program-toggle');
-        if (progBtn) {
-          const list = document.getElementById(progBtn.getAttribute('aria-controls'));
-          const expanded = progBtn.getAttribute('aria-expanded') === 'true';
-          progBtn.setAttribute('aria-expanded', String(!expanded));
-          list.hidden = expanded;
-          return;
+    /* =========================================================
+       INTERACCIÓN (un único listener para toda la página)
+       ========================================================= */
+    function closeCalMenus() {
+      document.querySelectorAll('.cal-menu').forEach((m) => (m.hidden = true));
+      document.querySelectorAll('.cal-btn').forEach((b) => b.setAttribute('aria-expanded', 'false'));
+    }
+
+    document.addEventListener('click', (e) => {
+      const progBtn = e.target.closest('.program-toggle');
+      if (progBtn) {
+        const list = document.getElementById(progBtn.getAttribute('aria-controls'));
+        const expanded = progBtn.getAttribute('aria-expanded') === 'true';
+        progBtn.setAttribute('aria-expanded', String(!expanded));
+        if (list) list.hidden = expanded;
+        return;
+      }
+
+      const calBtn = e.target.closest('.cal-btn');
+      if (calBtn) {
+        const menu = document.getElementById(calBtn.getAttribute('aria-controls'));
+        const wasOpen = calBtn.getAttribute('aria-expanded') === 'true';
+        closeCalMenus();
+        if (!wasOpen && menu) {
+          menu.hidden = false;
+          calBtn.setAttribute('aria-expanded', 'true');
         }
+        return;
+      }
 
-        const calBtn = e.target.closest('.cal-btn');
-        if (calBtn) {
-          e.stopPropagation();
-          const menu = document.getElementById(calBtn.getAttribute('aria-controls'));
-          const wasOpen = calBtn.getAttribute('aria-expanded') === 'true';
-          document.querySelectorAll('.cal-menu').forEach((m) => (m.hidden = true));
-          document.querySelectorAll('.cal-btn').forEach((b) => b.setAttribute('aria-expanded', 'false'));
-          if (!wasOpen) {
-            menu.hidden = false;
-            calBtn.setAttribute('aria-expanded', 'true');
+      const icsBtn = e.target.closest('[data-ics-index]');
+      if (icsBtn) {
+        const ev = currentEvents[Number(icsBtn.getAttribute('data-ics-index'))];
+        if (ev) downloadIcsFile(ev);
+      }
+
+      if (!e.target.closest('.cal-menu')) closeCalMenus();
+      else if (icsBtn || e.target.closest('.cal-menu a')) closeCalMenus();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeCalMenus();
+    });
+
+    /* =========================================================
+       CARGA DE DATOS (con copia local para usar sin conexión)
+       ========================================================= */
+    function processGviz(text) {
+      const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+      const data = JSON.parse(jsonStr);
+
+      let cols = data.table.cols.map((c) => (c.label || '').trim());
+      let rows = data.table.rows || [];
+
+      if (!cols.some(Boolean) && rows.length > 0 && rows[0].c) {
+        cols = rows[0].c.map((cell) => (cell && cell.v !== null && cell.v !== undefined ? String(cell.v).trim() : ''));
+        rows = rows.slice(1);
+      }
+
+      const today = startOfToday();
+
+      return rows
+        .map((row, rowIndex) => {
+          const obj = {};
+          cols.forEach((col, i) => {
+            const cell = row.c && row.c[i];
+            obj[col] = cell && cell.v !== null && cell.v !== undefined ? String(cell.v).trim() : '';
+          });
+
+          if (!obj.Titulo) return null;
+          const startDate = parseSheetDate(obj.Fecha_Inicio);
+          if (!startDate) {
+            console.warn(`Agenda: fila ${rowIndex + 2} ignorada, fecha de inicio no válida:`, obj.Fecha_Inicio);
+            return null;
           }
-          return;
-        }
+          const endDate = parseSheetDate(obj.Fecha_Fin) || startDate;
 
-        const icsBtn = e.target.closest('[data-ics-index]');
-        if (icsBtn) {
-          const ev = events[Number(icsBtn.getAttribute('data-ics-index'))];
-          if (ev) downloadIcsFile(ev);
-          document.querySelectorAll('.cal-menu').forEach((m) => (m.hidden = true));
-          document.querySelectorAll('.cal-btn').forEach((b) => b.setAttribute('aria-expanded', 'false'));
-        }
-      });
+          return {
+            emoji: obj.Emoji || '',
+            titulo: obj.Titulo,
+            startDate,
+            endDate,
+            hora: obj.Hora || '',
+            lugar: obj.Lugar || '',
+            programa: obj.Programa || '',
+            inscripcion: obj.Inscripcion || '',
+            descripcion: obj.Descripcion || ''
+          };
+        })
+        .filter((ev) => ev && ev.endDate >= today)
+        .sort((a, b) => {
+          const diff = a.startDate - b.startDate;
+          if (diff !== 0) return diff;
+          return parseTimeMinutes(a.hora) - parseTimeMinutes(b.hora);
+        });
+    }
 
-      document.addEventListener('click', () => {
-        document.querySelectorAll('.cal-menu').forEach((m) => (m.hidden = true));
-        document.querySelectorAll('.cal-btn').forEach((b) => b.setAttribute('aria-expanded', 'false'));
-      });
+    function readCache() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && parsed.text ? parsed : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveCache(text) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), text }));
+      } catch (e) { /* almacenamiento lleno o bloqueado: se ignora */ }
+    }
+
+    function formatWhen(ts) {
+      const d = new Date(ts);
+      const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      return isSameDay(d, new Date()) ? `hoy a las ${time}` : `${pad(d.getDate())}/${pad(d.getMonth() + 1)} a las ${time}`;
+    }
+
+    function setStatus(mode, ts) {
+      const el = document.getElementById('updateInfo');
+      if (!el) return;
+      if (mode === 'ok') el.textContent = `Actualizado ${formatWhen(ts)}`;
+      else if (mode === 'offline') el.textContent = `Sin conexión · mostrando el último listado (${formatWhen(ts)})`;
+      else el.textContent = 'Actualizando…';
     }
 
     async function loadEvents() {
       const container = document.getElementById('agendaContainer');
+      const cached = readCache();
+
+      // Pinta enseguida el último listado guardado mientras se consulta el Excel.
+      if (cached) {
+        try {
+          renderAgenda(processGviz(cached.text));
+          setStatus('loading');
+        } catch (e) { /* copia dañada: se espera a la red */ }
+      }
+
       try {
-        const response = await fetch(GVIZ_URL);
+        const response = await fetch(GVIZ_URL, { cache: 'no-store' });
         if (!response.ok) throw new Error('Error de red al consultar la hoja');
         const text = await response.text();
-        const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-        const data = JSON.parse(jsonStr);
-
-        let cols = data.table.cols.map((c) => (c.label || '').trim());
-        let rows = data.table.rows || [];
-
-        if (!cols.some(Boolean) && rows.length > 0 && rows[0].c) {
-          cols = rows[0].c.map((cell) => (cell && cell.v !== null && cell.v !== undefined ? String(cell.v).trim() : ''));
-          rows = rows.slice(1);
-        }
-
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        const events = rows
-          .map((row) => {
-            const obj = {};
-            cols.forEach((col, i) => {
-              const cell = row.c && row.c[i];
-              obj[col] = cell && cell.v !== null && cell.v !== undefined ? String(cell.v).trim() : '';
-            });
-
-            const startDate = parseSheetDate(obj.Fecha_Inicio);
-            if (!startDate || !obj.Titulo) return null;
-            const endDate = parseSheetDate(obj.Fecha_Fin) || startDate;
-
-            return {
-              tipo: obj.Tipo || 'Pequeño',
-              emoji: obj.Emoji || '',
-              titulo: obj.Titulo,
-              startDate,
-              endDate,
-              hora: obj.Hora || '',
-              lugar: obj.Lugar || '',
-              programa: obj.Programa || '',
-              inscripcion: obj.Inscripcion || '',
-              descripcion: obj.Descripcion || ''
-            };
-          })
-          .filter((ev) => ev && ev.endDate >= today)
-          .sort((a, b) => {
-            const diff = a.startDate - b.startDate;
-            if (diff !== 0) return diff;
-            return parseTimeMinutes(a.hora) - parseTimeMinutes(b.hora);
-          });
-
+        const events = processGviz(text);
+        saveCache(text);
         renderAgenda(events);
+        setStatus('ok', Date.now());
       } catch (err) {
-        container.innerHTML = `
-          <div class="state-box">
-            <p>No se ha podido cargar la agenda en este momento. Inténtalo de nuevo en unos instantes.</p>
-          </div>
-        `;
+        if (cached) {
+          setStatus('offline', cached.ts);
+        } else {
+          container.innerHTML = '<div class="state-box"><p>No se ha podido cargar la agenda en este momento. Inténtalo de nuevo en unos instantes.</p></div>';
+          setStatus('error');
+          document.getElementById('updateInfo').textContent = 'Ayuntamiento de El Viso';
+        }
       }
     }
 
