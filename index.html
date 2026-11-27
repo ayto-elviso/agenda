@@ -152,7 +152,7 @@
     }
     .info-icon svg { width: 17px; height: 17px; }
 
-    .event-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+    .event-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); white-space: pre-line; }
 
     .event-actions {
       display: flex; gap: 8px;
@@ -240,15 +240,12 @@
     .poster-open { color: #fff; font-size: 14px; font-weight: 600; padding: 10px 14px; }
 
     .program-list {
-      list-style: none; margin: 14px 0 0; padding: 4px 14px;
+      list-style: disc; margin: 14px 0 0; padding: 12px 14px 12px 34px;
       background: #f8fafc; border: 1px solid var(--border); border-radius: 10px;
     }
     .program-list[hidden] { display: none; }
-    .program-list li {
-      padding: 10px 0; font-size: 14px; line-height: 1.4; color: var(--text-main);
-      border-bottom: 1px dotted #cbd5e1;
-    }
-    .program-list li:last-child { border-bottom: 0; }
+    .program-list li { padding: 5px 0; font-size: 14px; line-height: 1.5; color: var(--text-main); }
+    .program-list li::marker { color: var(--navy); }
 
     /* ---------- Estados y pie ---------- */
     .state-box { text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 15px; line-height: 1.5; }
@@ -404,6 +401,12 @@
       return t.length ? t[0] : 9999;
     }
 
+    // El programa puede escribirse con un salto de línea por actividad (Alt+Enter en la celda)
+    // o separando las actividades con "|".
+    function splitProgram(text) {
+      return String(text || '').split(/\r?\n|\|/).map((x) => x.trim()).filter(Boolean);
+    }
+
     function escapeHtml(text) {
       if (!text) return '';
       return String(text)
@@ -479,7 +482,8 @@
     function buildDetails(ev) {
       const parts = [];
       if (ev.descripcion) parts.push(ev.descripcion);
-      if (ev.programa) parts.push('Programa: ' + ev.programa.replace(/\s*\|\s*/g, ' · '));
+      const progItems = splitProgram(ev.programa);
+      if (progItems.length) parts.push('Programa:\n' + progItems.map((i) => `• ${i}`).join('\n'));
       if (ev.inscripcion) parts.push('Inscripción: ' + ev.inscripcion);
       return parts.join('\n\n');
     }
@@ -592,7 +596,7 @@
       if (ev.inscripcion) lines.push(`📝 Inscripción: ${ev.inscripcion}`);
       if (ev.descripcion) lines.push('', ev.descripcion);
       if (ev.programa) {
-        const items = ev.programa.split('|').map((x) => x.trim()).filter(Boolean);
+        const items = splitProgram(ev.programa);
         if (items.length) lines.push('', 'Programa:', ...items.map((i) => `• ${i}`));
       }
       const appUrl = location.origin + location.pathname.replace(/index\.html$/, '');
@@ -739,7 +743,7 @@
       let programBtn = '';
       let programList = '';
       if (ev.programa) {
-        const items = ev.programa.split('|').map((s) => s.trim()).filter(Boolean);
+        const items = splitProgram(ev.programa);
         if (items.length) {
           const progId = `prog-${index}`;
           programBtn = `<button type="button" class="btn btn-primary program-toggle" aria-expanded="false" aria-controls="${progId}"><span>Ver programación</span>${ICONS.chevron}</button>`;

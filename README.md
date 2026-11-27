@@ -37,7 +37,7 @@ La web lee la pestaña `Eventos` (la hoja debe estar compartida como «cualquier
 | `Fecha_Fin` | Fecha de fin (`AAAA-MM-DD`); si se deja vacía, es el mismo día | `2026-12-04` |
 | `Hora` | Hora de inicio o tramo (`18:00 a 20:00 h`) | `18:00 h` |
 | `Lugar` | Ubicación (opcional) | `Plaza de la Constitución` |
-| `Programa` | Hitos separados por `\|` (opcional) | `18:00 h · El Belén \| 18:30 h · Alumbrado` |
+| `Programa` | Una actividad por línea (`Alt+Enter` dentro de la celda), o separadas por `\|` (opcional). Se muestran como lista con puntos | `18:00 h · El Belén` ↵ `18:30 h · Alumbrado` |
 | `Inscripcion` | Instrucciones o enlace (opcional) | `En el Ayuntamiento hasta el 2 de diciembre` |
 | `Descripcion` | Resumen breve | `Inauguración del Belén y encendido oficial.` |
 | `Cartel` | Enlace al cartel del evento (opcional). Aparece el botón «Ver cartel» | `https://drive.google.com/file/d/…/view` |
