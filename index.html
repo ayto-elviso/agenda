@@ -31,7 +31,8 @@
 
     * { box-sizing: border-box; }
 
-    html { scroll-padding-top: 56px; }
+    :root { --banner-h: 150px; --pin-h: 75px; }
+    html { scroll-padding-top: calc(var(--pin-h) + 56px); }
 
     body {
       margin: 0;
@@ -52,8 +53,51 @@
       text-align: center;
       padding-bottom: 22px;
     }
-    .header-banner { height: 150px; background: var(--navy); }
-    .header-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* La foto de cabecera se parte en dos mitades idénticas y alineadas:
+       la de arriba se queda fija (con la búsqueda) y la de abajo se va con el escudo y el título. */
+    .banner-top {
+      position: sticky; top: 0; z-index: 10;
+      height: var(--pin-h); overflow: hidden; background: var(--navy);
+    }
+    .banner-bottom { position: relative; height: var(--pin-h); overflow: hidden; background: var(--navy); }
+    .banner-top img, .banner-bottom img {
+      position: absolute; left: 0; width: 100%; height: var(--banner-h);
+      object-fit: cover; display: block;
+    }
+    .banner-top img { top: 0; }
+    .banner-bottom img { top: calc(-1 * var(--pin-h)); }
+
+    /* Barra de búsqueda sobre la foto de cabecera */
+    .search-bar {
+      position: absolute; z-index: 2; top: calc((var(--pin-h) - 46px) / 2); left: 16px; right: 16px;
+      max-width: 480px; margin: 0 auto; height: 46px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 8px 0 16px;
+      background: #fff; border-radius: 999px;
+      box-shadow: 0 2px 12px rgba(15, 41, 66, 0.22);
+      transition: box-shadow .15s;
+    }
+    .search-bar:focus-within { box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.7), 0 2px 12px rgba(15, 41, 66, 0.22); }
+    .search-icon { width: 20px; height: 20px; flex: 0 0 auto; color: var(--text-muted); }
+    .search-input {
+      flex: 1; min-width: 0; height: 100%;
+      border: 0; outline: 0; background: transparent;
+      font: 500 16px 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--text-main);
+      -webkit-appearance: none; appearance: none;
+    }
+    .search-input::placeholder { color: #6b7a90; opacity: 1; }
+    .search-clear {
+      width: 34px; height: 34px; flex: 0 0 auto; border: 0; border-radius: 50%;
+      background: var(--bg-soft); color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .search-clear[hidden] { display: none; }
+    .search-clear svg { width: 16px; height: 16px; }
+    .search-status { margin: 0; padding: 14px 16px 0; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+    .btn-link {
+      margin-top: 8px; min-height: 44px; padding: 0 12px; border: 0; background: transparent;
+      color: var(--navy); font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px;
+    }
     .header-logo-wrap {
       width: 100px; height: 100px;
       margin: -50px auto 12px;
@@ -91,11 +135,11 @@
     }
 
     /* ---------- Contenido ---------- */
-    .main-container { max-width: 720px; margin: 0 auto; }
+    .main-container { max-width: 720px; margin: 0 auto; scroll-margin-top: var(--pin-h); }
 
     /* Mes pegajoso: no poner overflow en body ni en contenedores superiores */
     .month-heading {
-      position: sticky; top: 0; z-index: 5;
+      position: sticky; top: var(--pin-h); z-index: 5;
       margin: 0; height: 50px;
       display: flex; align-items: center; gap: 11px;
       padding: 0 16px;
@@ -267,7 +311,7 @@
     .site-footer p { margin: 4px 0; }
 
     @media (min-width: 700px) {
-      .header-banner { height: 220px; }
+      :root { --banner-h: 220px; --pin-h: 110px; }
       .header-title { font-size: 34px; }
       .header-subtitle { max-width: 440px; }
     }
@@ -278,8 +322,19 @@
   </style>
 </head>
 <body>
+  <div class="banner-top">
+    <img src="cabecera.jpg" width="828" height="315" alt="" />
+      <form class="search-bar" id="searchForm" role="search">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+        <input class="search-input" id="searchInput" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Buscar" aria-label="Buscar eventos por título, fecha o descripción" />
+        <button type="button" class="search-clear" id="searchClear" aria-label="Borrar búsqueda" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+        </button>
+      </form>
+  </div>
+
   <header class="site-header">
-    <div class="header-banner">
+    <div class="banner-bottom">
       <img src="cabecera.jpg" width="828" height="315" alt="" />
     </div>
     <div class="header-logo-wrap">
@@ -840,12 +895,14 @@
         </article>`;
     }
 
-    function renderAgenda(events) {
+    function renderAgenda(events, query = '') {
       currentEvents = events;
       const container = document.getElementById('agendaContainer');
 
       if (!events.length) {
-        container.innerHTML = '<div class="state-box"><p>No hay actividades próximas publicadas en este momento.</p></div>';
+        container.innerHTML = query
+          ? `<div class="state-box"><p>No hay eventos que coincidan con «<strong>${escapeHtml(query)}</strong>».</p><button type="button" class="btn-link" data-search-clear>Borrar búsqueda</button></div>`
+          : '<div class="state-box"><p>No hay actividades próximas publicadas en este momento.</p></div>';
         return;
       }
 
@@ -862,7 +919,11 @@
         groups.get(key).items.push(ev);
       });
 
-      container.innerHTML = Array.from(groups.values()).map((group) => `
+      const status = query
+        ? `<p class="search-status">${events.length} ${events.length === 1 ? 'evento' : 'eventos'} para «${escapeHtml(query)}»</p>`
+        : '';
+
+      container.innerHTML = status + Array.from(groups.values()).map((group) => `
         <section class="month-section">
           <h2 class="month-heading">${group.label}</h2>
           <div class="events-list">
@@ -870,6 +931,100 @@
           </div>
         </section>`).join('');
     }
+
+    /* =========================================================
+       BÚSQUEDA
+       ========================================================= */
+    let allEvents = [];
+    let dataLoaded = false;
+    let searchQuery = '';
+
+    const normalizeText = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    // Texto de fecha buscable: "viernes 4 diciembre dic 2026 4/12 04/12" (inicio, fin y meses intermedios).
+    function dateSearchText(ev) {
+      const parts = [];
+      const addDay = (d) => parts.push(
+        DAYS_FULL[d.getDay()], String(d.getDate()), `${d.getDate()}/${d.getMonth() + 1}`,
+        `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`, MONTHS_LONG[d.getMonth()], MONTHS_SHORT[d.getMonth()], String(d.getFullYear())
+      );
+      addDay(ev.startDate);
+      if (!isSameDay(ev.startDate, ev.endDate)) {
+        addDay(ev.endDate);
+        const cur = new Date(ev.startDate.getFullYear(), ev.startDate.getMonth(), 1);
+        for (let i = 0; i < 24 && cur <= ev.endDate; i++) {
+          parts.push(MONTHS_LONG[cur.getMonth()], MONTHS_SHORT[cur.getMonth()], String(cur.getFullYear()));
+          cur.setMonth(cur.getMonth() + 1);
+        }
+      }
+      return parts.join(' ');
+    }
+
+    function searchHaystack(ev) {
+      if (!ev._hay) {
+        ev._hay = normalizeText([ev.titulo, prettyTitle(ev.titulo), ev.descripcion, ev.lugar, ev.programa, ev.hora, dateSearchText(ev)].join(' \n '));
+      }
+      return ev._hay;
+    }
+
+    // Todas las palabras de la búsqueda deben aparecer. Las que llevan números se comparan
+    // como palabra suelta, para que "4" no coincida con "14" o "2024".
+    function eventMatches(ev, tokens) {
+      const hay = searchHaystack(ev);
+      return tokens.every((tok) => {
+        if (/\d/.test(tok)) {
+          const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return new RegExp(`(^|[^0-9])${esc}($|[^0-9])`).test(hay);
+        }
+        return hay.includes(tok);
+      });
+    }
+
+    function applyFilter() {
+      if (!dataLoaded) return;
+      const query = searchQuery.trim();
+      const tokens = normalizeText(query).split(/\s+/).filter(Boolean);
+      renderAgenda(tokens.length ? allEvents.filter((ev) => eventMatches(ev, tokens)) : allEvents, query);
+    }
+
+    function setEvents(events) {
+      allEvents = events;
+      dataLoaded = true;
+      applyFilter();
+    }
+
+    (function setupSearch() {
+      const form = document.getElementById('searchForm');
+      const input = document.getElementById('searchInput');
+      const clearBtn = document.getElementById('searchClear');
+      let timer = null;
+
+      function clearSearch() {
+        input.value = '';
+        clearBtn.hidden = true;
+        searchQuery = '';
+        applyFilter();
+      }
+      window.clearSearch = () => { clearSearch(); input.focus(); };
+
+      input.addEventListener('input', () => {
+        clearBtn.hidden = !input.value;
+        clearTimeout(timer);
+        timer = setTimeout(() => { searchQuery = input.value; applyFilter(); }, 120);
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && input.value) { clearSearch(); }
+      });
+      clearBtn.addEventListener('click', () => { clearSearch(); input.focus(); });
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearTimeout(timer);
+        searchQuery = input.value;
+        applyFilter();
+        input.blur();
+        document.getElementById('agendaContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    })();
 
     /* =========================================================
        INTERACCIÓN (un único listener para toda la página)
@@ -880,6 +1035,11 @@
     }
 
     document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-search-clear]')) {
+        window.clearSearch();
+        return;
+      }
+
       if (e.target.closest('[data-poster-close]')) {
         closePoster();
         return;
@@ -1029,7 +1189,7 @@
       // Pinta enseguida el último listado guardado mientras se consulta el Excel.
       if (cached) {
         try {
-          renderAgenda(processGviz(cached.text));
+          setEvents(processGviz(cached.text));
           setStatus('loading');
         } catch (e) { /* copia dañada: se espera a la red */ }
       }
@@ -1040,7 +1200,7 @@
         const text = await response.text();
         const events = processGviz(text);
         saveCache(text);
-        renderAgenda(events);
+        setEvents(events);
         setStatus('ok', Date.now());
       } catch (err) {
         if (cached) {

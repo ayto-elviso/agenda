@@ -21,6 +21,7 @@ Aplicación web progresiva (PWA) estática en HTML, CSS y JavaScript puro, pensa
 
 ## Funciones
 
+- Barra de búsqueda sobre la cabecera: busca por título, fecha ("viernes", "4 dic", "diciembre", "4/12"), descripción, lugar, hora y programa, sin distinguir mayúsculas ni tildes. Con varias palabras, deben aparecer todas.
 - Meses con encabezado fijo al hacer scroll.
 - Una tarjeta por evento: fecha, hora, lugar, inscripción, descripción y programa desplegable.
 - Avisos: **Hoy**, **Mañana**, **Esta semana** (próximos 7 días) y **En curso** (eventos de varios días ya iniciados).
