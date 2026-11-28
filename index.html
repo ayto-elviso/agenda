@@ -508,9 +508,25 @@
         .replace(/'/g, '&#39;');
     }
 
-    // Convierte en enlaces pulsables las direcciones web (con o sin https:// / www.) y los correos.
-    // El resto del texto se escapa, y solo se generan enlaces http(s) o mailto.
-    const LINK_RE = /(^|[\s(\[«"“¿¡>])((?:https?:\/\/|www\.)[^\s<>"“”«»]+|[\w.+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+|(?:[A-Za-z0-9-]+\.)+(?:es|com|org|net|info|eu|cat|gal|eus|edu|gov|app|io|tv|me|co|biz|online|site)(?![\w@-])(?:[\/?#][^\s<>"“”«»]*)?)/gi;
+    // Convierte en enlaces pulsables, en una sola pasada sobre el texto original:
+    //  2 · direcciones web (con https:// o www.)      3 · correos electrónicos
+    //  4-5 · WhatsApp + móvil español (6/7) → wa.me   6 · teléfonos españoles de 9 dígitos → tel:
+    //  7 · dominios sin protocolo (cordobaverde.info, forms.gle/…)
+    // El texto se escapa por tramos y solo se crean enlaces http(s), mailto y tel.
+    // (Sin "lookbehind", para que funcione también en iPhone con iOS antiguo.)
+    const PHONE_9 = '(?:(?:\\+34|0034)[\\s.-]?)?[6789]\\d{2}(?:[\\s.-]?\\d{3}[\\s.-]?\\d{3}|(?:[\\s.-]?\\d{2}){3})';
+    const MOBILE_9 = '(?:(?:\\+34|0034)[\\s.-]?)?[67]\\d{2}(?:[\\s.-]?\\d{3}[\\s.-]?\\d{3}|(?:[\\s.-]?\\d{2}){3})';
+    const URL_BODY = '[^\\s<>"“”«»]';
+    const LINK_RE = new RegExp(
+      '(^|[^A-Za-z0-9_@./+-])(?:' +
+        '((?:https?:\\/\\/|www\\.)' + URL_BODY + '+)' +
+        '|([\\w.+-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)' +
+        '|(whats?app(?:\\s+(?:al|en|el|n[úu]mero|n[º°o]\\.?|num\\.?))?\\s*:?\\s*)(' + MOBILE_9 + ')(?![\\d/:@-])' +
+        '|(' + PHONE_9 + ')(?![\\d/:@-])' +
+        '|((?:[A-Za-z0-9-]+\\.)+(?:es|com|org|net|info|eu|cat|gal|eus|edu|gov|app|io|tv|me|co|biz|online|site|gle|ly)(?![\\w@-])(?:[\\/?#]' + URL_BODY + '*)?)' +
+      ')', 'gi');
+
+    const ntel = (raw) => raw.replace(/\D/g, '').replace(/^(?:0034|34(?=\d{9}$))/, '');
 
     function linkify(text) {
       const src = String(text || '');
@@ -518,21 +534,37 @@
       let last = 0;
       let m;
       LINK_RE.lastIndex = 0;
+
+      const anchor = (href, shown, external) =>
+        `<a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escapeHtml(shown)}</a>`;
+
       while ((m = LINK_RE.exec(src)) !== null) {
         const start = m.index + m[1].length;
-        const raw = m[2];
-        const trail = (raw.match(/[.,;:!?)\]»"”']+$/) || [''])[0];
-        const shown = raw.slice(0, raw.length - trail.length);
-        if (!shown) { LINK_RE.lastIndex = start + raw.length; continue; }
+        let from = start;
+        let shown;
+        let html;
 
-        let href;
-        if (/^https?:\/\//i.test(shown)) href = shown;
-        else if (/^[\w.+-]+@/.test(shown)) href = 'mailto:' + shown;
-        else href = 'https://' + shown;
+        if (m[2] || m[7]) {                                   // web
+          const raw = m[2] || m[7];
+          const trail = (raw.match(/[.,;:!?)\]»"”']+$/) || [''])[0];
+          shown = raw.slice(0, raw.length - trail.length);
+          if (!shown) { LINK_RE.lastIndex = start + raw.length; continue; }
+          const href = /^https?:\/\//i.test(shown) ? shown : 'https://' + shown;
+          html = anchor(href, shown, true);
+        } else if (m[3]) {                                    // correo
+          shown = m[3];
+          html = anchor('mailto:' + shown, shown, false);
+        } else if (m[5]) {                                    // WhatsApp (el prefijo queda como texto)
+          from = start + m[4].length;
+          shown = m[5];
+          html = anchor('https://wa.me/34' + ntel(shown), shown, true);
+        } else {                                              // teléfono
+          shown = m[6];
+          html = anchor('tel:+34' + ntel(shown), shown, false);
+        }
 
-        out += escapeHtml(src.slice(last, start)) +
-          `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(shown)}</a>`;
-        last = start + shown.length;
+        out += escapeHtml(src.slice(last, from)) + html;
+        last = from + shown.length;
         LINK_RE.lastIndex = last;
       }
       return out + escapeHtml(src.slice(last));
