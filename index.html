@@ -53,24 +53,23 @@
       text-align: center;
       padding-bottom: 22px;
     }
-    /* La foto de cabecera se parte en dos mitades idénticas y alineadas:
-       la de arriba se queda fija (con la búsqueda) y la de abajo se va con el escudo y el título. */
-    .banner-top {
-      position: sticky; top: 0; z-index: 10;
-      height: var(--pin-h); overflow: hidden; background: var(--navy);
+    /* La foto de cabecera sube con el scroll como un bloque entero (sin cortes) y se detiene
+       cuando queda la mitad inferior visible. La búsqueda va en su propia capa fija, por encima
+       de la foto; el escudo queda entre ambas y se pierde por arriba sin recortarse. */
+    .banner {
+      position: sticky; top: calc(-1 * var(--pin-h)); z-index: 10;
+      height: var(--banner-h); background: var(--navy);
     }
-    .banner-bottom { position: relative; height: var(--pin-h); overflow: hidden; background: var(--navy); }
-    .banner-top img, .banner-bottom img {
-      position: absolute; left: 0; width: 100%; height: var(--banner-h);
-      object-fit: cover; display: block;
+    .banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .search-layer {
+      position: sticky; z-index: 12; pointer-events: none;
+      top: calc((var(--pin-h) - 46px) / 2); height: 46px;
+      margin: calc((var(--pin-h) - 46px) / 2) 16px calc(-1 * (var(--pin-h) + 46px) / 2);
     }
-    .banner-top img { top: 0; }
-    .banner-bottom img { top: calc(-1 * var(--pin-h)); }
 
     /* Barra de búsqueda sobre la foto de cabecera */
     .search-bar {
-      position: absolute; z-index: 2; top: calc((var(--pin-h) - 46px) / 2); left: 16px; right: 16px;
-      max-width: 480px; margin: 0 auto; height: 46px;
+      pointer-events: auto; max-width: 480px; margin: 0 auto; height: 46px;
       display: flex; align-items: center; gap: 10px;
       padding: 0 8px 0 16px;
       background: #fff; border-radius: 999px;
@@ -104,7 +103,7 @@
       background: #fff;
       border-radius: 50%;
       box-shadow: 0 4px 14px rgba(15, 41, 66, 0.16);
-      position: relative;
+      position: relative; z-index: 11;
       overflow: hidden;
     }
     .header-logo-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
@@ -199,6 +198,7 @@
 
     .event-desc { margin-top: 12px; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
     .event-desc p { margin: 0 0 8px; }
+    a.nw { white-space: nowrap; }
     .event-desc a, .info-row a, .program-list a {
       color: var(--navy); font-weight: 600;
       text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere;
@@ -322,8 +322,7 @@
   </style>
 </head>
 <body>
-  <div class="banner-top">
-    <img src="cabecera.jpg" width="828" height="315" alt="" />
+  <div class="search-layer">
       <form class="search-bar" id="searchForm" role="search">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
         <input class="search-input" id="searchInput" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Buscar" aria-label="Buscar eventos por título, fecha o descripción" />
@@ -333,10 +332,11 @@
       </form>
   </div>
 
+  <div class="banner">
+    <img src="cabecera.jpg" width="828" height="315" alt="" />
+  </div>
+
   <header class="site-header">
-    <div class="banner-bottom">
-      <img src="cabecera.jpg" width="828" height="315" alt="" />
-    </div>
     <div class="header-logo-wrap">
       <img src="escudo.png" width="512" height="512" alt="Escudo de El Viso" />
     </div>
@@ -535,8 +535,9 @@
       let m;
       LINK_RE.lastIndex = 0;
 
+      // Los enlaces cortos (teléfonos, correos, dominios) no se parten entre dos líneas.
       const anchor = (href, shown, external) =>
-        `<a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escapeHtml(shown)}</a>`;
+        `<a href="${escapeHtml(href)}"${shown.length <= 26 ? ' class="nw"' : ''}${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escapeHtml(shown)}</a>`;
 
       while ((m = LINK_RE.exec(src)) !== null) {
         const start = m.index + m[1].length;
