@@ -7,13 +7,15 @@ Aplicación web progresiva (PWA) estática en HTML, CSS y JavaScript puro, pensa
 | Archivo | Para qué sirve |
 |---|---|
 | `index.html` | La aplicación completa: diseño, lectura del Excel, avisos, calendario y compartir. |
-| `sw.js` | Service Worker (caché `agenda-el-viso-v4`). Red primero para la página, caché si no hay conexión. |
+| `sw.js` | Service Worker (caché `agenda-el-viso-v5`). Red primero para la página, caché si no hay conexión. |
 | `manifest.json` | Permite instalar la agenda como app en el móvil. |
-| `icon-192.png`, `icon-512.png` | Iconos de la app instalada. |
+| `icon-192.png`, `icon-512.png` | Iconos redondos con fondo transparente (uso normal: ordenador, accesos directos). |
+| `icon-maskable-192.png`, `icon-maskable-512.png` | Iconos cuadrados a sangre con fondo blanco y el escudo centrado (zona segura del 80 %). Android los recorta en círculo; son los que se ven en el móvil. **No deben tener fondo transparente.** |
+| `apple-touch-icon.png` | Icono para «Añadir a pantalla de inicio» en iPhone (fondo opaco). |
 | `cabecera.jpg`, `logo.jpg` | Foto de cabecera y escudo. |
 | `.nojekyll` | Hace que GitHub Pages sirva los archivos tal cual, sin Jekyll. |
 
-> Cuando cambies `index.html` u otros archivos, sube también `sw.js` con el número de versión de la caché aumentado (`v4` → `v5`) para que los móviles reciban el cambio al instante.
+> Cuando cambies `index.html` u otros archivos, sube también `sw.js` con el número de versión de la caché aumentado (`v5` → `v6`) para que los móviles reciban el cambio al instante.
 
 ## Funciones
 
