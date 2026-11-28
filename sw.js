@@ -1,10 +1,10 @@
-const CACHE_NAME = 'agenda-el-viso-v5';
+const CACHE_NAME = 'agenda-el-viso-v6';
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './cabecera.jpg',
-  './logo.jpg',
+  './escudo.png',
   './icon-192.png',
   './icon-512.png',
   './icon-maskable-192.png',
